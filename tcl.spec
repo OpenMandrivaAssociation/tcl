@@ -1,7 +1,7 @@
 %define	name	tcl
-%define	version	8.4.14
+%define	version	8.5a5
 %define	release	%mkrel 1
-%define major	8.4
+%define major	8.5
 %define libname	%mklibname %{name} %{major}
 
 Summary:	An embeddable scripting language
@@ -35,6 +35,8 @@ development, you should also install the tk and tclx packages.
 %{_mandir}/man1/*
 %{_mandir}/man3/*
 %{_mandir}/mann/*
+%{_prefix}/lib/tcl8/8.4/*.tm
+%{_prefix}/lib/tcl8/8.5/*.tm
 
 #--------------------------------------------------------------------
 
@@ -91,10 +93,6 @@ This package contains development files for %{name}.
 
 %prep
 %setup -q -n %{name}%{version}
-%patch0 -p0 -b .rpath
-%patch1 -p1 -b .soname
-%patch4 -p1 -b .dlopen
-%patch6 -p1 -b .lib64
 
 %build
 
@@ -103,7 +101,7 @@ pushd unix
     	    test -f /usr/share/libtool/$f || continue
     	    find . -type f -name $f -exec cp /usr/share/libtool/$f \{\} \;
     done
-    autoconf-2.13
+    autoconf-2.5x
     %configure \
 	--enable-gcc \
 	--enable-threads \
