@@ -1,6 +1,6 @@
 %define	name	tcl
 %define	version	8.5a5
-%define	release	%mkrel 1
+%define	release	%mkrel 2
 %define major	8.5
 %define libname	%mklibname %{name} %{major}
 
@@ -70,6 +70,7 @@ Group:		Development/Other
 Requires:	%{libname} = %{version}
 Provides:	%{name}-devel = %{version}-%{release}
 Provides:	lib%{name}-devel = %{version}-%{release}
+Conflicts:	%{_lib}tcl8.4-devel
 
 %description -n	%{libname}-devel
 This package contains development files for %{name}.
