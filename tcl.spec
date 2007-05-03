@@ -1,6 +1,6 @@
 %define	name	tcl
 %define	version	8.5a5
-%define	release	%mkrel 2
+%define	release	%mkrel 3
 %define major	8.5
 %define libname	%mklibname %{name} %{major}
 
@@ -16,8 +16,9 @@ Patch0:		tcl-8.4.11-rpath.patch
 Patch1:		tcl8.4.11-soname.diff
 Patch4:		tcl-8.4.2-dlopen.patch
 Patch6:		tcl-8.4.12-lib64-auto_path.patch
-Requires:	%{libname} = %{version}
+Requires:	%{libname} = %{version}-%{release}
 Buildroot:	%{_tmppath}/%{name}-%{version}
+Obsoletes:	%mklibname -d 8.4
 
 %description
 Tcl is a simple scripting language designed to be embedded into
@@ -67,10 +68,10 @@ development, you should also install the tk and tclx packages.
 %package -n	%{libname}-devel 
 Summary:	Development files for %{name}
 Group:		Development/Other
-Requires:	%{libname} = %{version}
+Requires:	%{name} = %{version}-%{release}
+Requires:	%{libname} = %{version}-%{version}
 Provides:	%{name}-devel = %{version}-%{release}
 Provides:	lib%{name}-devel = %{version}-%{release}
-Conflicts:	%{_lib}tcl8.4-devel
 
 %description -n	%{libname}-devel
 This package contains development files for %{name}.
