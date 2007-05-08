@@ -18,7 +18,6 @@ Patch4:		tcl-8.4.2-dlopen.patch
 Patch6:		tcl-8.4.12-lib64-auto_path.patch
 Requires:	%{libname} = %{version}-%{release}
 Buildroot:	%{_tmppath}/%{name}-%{version}
-Obsoletes:	%mklibname %{name} -d 8.4
 
 %description
 Tcl is a simple scripting language designed to be embedded into
@@ -72,6 +71,7 @@ Requires:	%{name} = %{version}-%{release}
 Requires:	%{libname} = %{version}-%{version}
 Provides:	%{name}-devel = %{version}-%{release}
 Provides:	lib%{name}-devel = %{version}-%{release}
+Obsoletes:	%mklibname %{name} -d 8.4
 
 %description -n	%{libname}-devel
 This package contains development files for %{name}.
