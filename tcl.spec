@@ -1,6 +1,6 @@
 %define	name	tcl
 %define	version	8.5a5
-%define	release	%mkrel 3
+%define	release	%mkrel 4
 %define major	8.5
 %define libname	%mklibname %{name} %{major}
 
@@ -68,7 +68,7 @@ development, you should also install the tk and tclx packages.
 Summary:	Development files for %{name}
 Group:		Development/Other
 Requires:	%{name} = %{version}-%{release}
-Requires:	%{libname} = %{version}-%{version}
+Requires:	%{libname} = %{version}-%{release}
 Provides:	%{name}-devel = %{version}-%{release}
 Provides:	lib%{name}-devel = %{version}-%{release}
 Obsoletes:	%mklibname %{name} -d 8.4
