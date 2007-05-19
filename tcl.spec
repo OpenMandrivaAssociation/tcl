@@ -16,6 +16,7 @@ Patch0:		tcl-8.4.11-rpath.patch
 Patch1:		tcl8.4.11-soname.diff
 Patch4:		tcl-8.4.2-dlopen.patch
 Patch6:		tcl-8.4.12-lib64-auto_path.patch
+Patch7:		tcl-8.5a5-fix_includes.patch
 Requires:	%{libname} = %{version}-%{release}
 Buildroot:	%{_tmppath}/%{name}-%{version}
 
@@ -95,6 +96,8 @@ This package contains development files for %{name}.
 
 %prep
 %setup -q -n %{name}%{version}
+
+%patch7 -p1
 
 %build
 
