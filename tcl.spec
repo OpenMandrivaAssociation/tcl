@@ -1,6 +1,6 @@
 %define	name	tcl
 %define	version	8.5a5
-%define	release	%mkrel 4
+%define	release	%mkrel 5
 %define major	8.5
 %define libname	%mklibname %{name} %{major}
 
