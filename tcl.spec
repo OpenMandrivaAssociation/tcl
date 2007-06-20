@@ -1,8 +1,9 @@
 %define	name	tcl
 %define	version	8.5a6
-%define	release	%mkrel 2
+%define	release	%mkrel 3
 %define major	8.5
 %define libname	%mklibname %{name} %{major}
+%define develname %mklibname %{name} -d
 
 Summary:	An embeddable scripting language
 Name:		%{name}
@@ -10,7 +11,7 @@ Version:	%{version}
 Release:	%{release}
 Group:		System/Libraries
 License:	BSD
-URL:		http://tcl.sourceforge.net/
+URL:		http://tcl.tk
 Source0:	http://prdownloads.sourceforge.net/tcl/%{name}%{version}-src.tar.bz2
 Patch0:		tcl-8.4.11-rpath.patch
 Patch1:		tcl8.4.11-soname.diff
@@ -67,19 +68,20 @@ development, you should also install the tk and tclx packages.
 
 #--------------------------------------------------------------------
 
-%package -n	%{libname}-devel 
+%package -n	%{develname}
 Summary:	Development files for %{name}
 Group:		Development/Other
 Requires:	%{name} = %{version}-%{release}
 Requires:	%{libname} = %{version}-%{release}
 Provides:	%{name}-devel = %{version}-%{release}
 Provides:	lib%{name}-devel = %{version}-%{release}
-Obsoletes:	%mklibname %{name} -d 8.4
+Obsoletes:	%mklibname %{name} 8.4 -d
+Obsoletes:	%mklibname %{name} 8.5 -d
 
-%description -n	%{libname}-devel
+%description -n	%{develname}
 This package contains development files for %{name}.
 
-%files -n %{libname}-devel -f %{libname}-devel.files
+%files -n %{develname} -f %{develname}.files
 %defattr(-,root,root)
 %dir %{_includedir}/tcl%{version}
 %dir %{_includedir}/tcl%{version}/compat
@@ -92,7 +94,6 @@ This package contains development files for %{name}.
 %attr(0755,root,root) %{_libdir}/*.so
 %attr(0644,root,root) %{_libdir}/*.a
 %attr(0755,root,root) %{_libdir}/tclConfig.sh
-
 
 #--------------------------------------------------------------------
 
@@ -109,8 +110,8 @@ pushd unix
     	    test -f /usr/share/libtool/$f || continue
     	    find . -type f -name $f -exec cp /usr/share/libtool/$f \{\} \;
     done
-    autoconf-2.5x
-    %configure \
+    autoconf
+    %configure2_5x \
 	--enable-gcc \
 	--enable-threads \
 	--enable-64bit \
@@ -163,10 +164,10 @@ perl -pi -e "s|`pwd`/unix/lib|%{_libdir}/lib|g" %{buildroot}%{_libdir}/tclConfig
 perl -pi -e "s|`pwd`|%{_includedir}/tcl%{version}|g" %{buildroot}%{_libdir}/tclConfig.sh
 
 # Arrangements for lib64 platforms
-echo "# placeholder" >> %{libname}-devel.files
+echo "# placeholder" >> %{develname}.files
 if [[ "%{_lib}" != "lib" ]]; then
     ln -s %{_libdir}/tclConfig.sh %{buildroot}%{_prefix}/lib/tclConfig.sh
-    echo "%{_prefix}/lib/tclConfig.sh" >> %{libname}-devel.files
+    echo "%{_prefix}/lib/tclConfig.sh" >> %{develname}.files
 fi
 
 # (fc) make sure .so files are writable by root
