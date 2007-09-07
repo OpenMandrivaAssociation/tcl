@@ -1,6 +1,6 @@
 %define	name	tcl
 %define	version	8.5a6
-%define	release	%mkrel 3
+%define	release	%mkrel 4
 %define major	8.5
 %define libname	%mklibname %{name} %{major}
 %define develname %mklibname %{name} -d
@@ -41,6 +41,10 @@ development, you should also install the tk and tclx packages.
 %{_mandir}/man1/*
 %{_mandir}/man3/*
 %{_mandir}/mann/*
+%dir %{_prefix}/lib/tcl8
+%dir %{_prefix}/lib/tcl8/8.4
+%dir %{_prefix}/lib/tcl8/8.4/platform
+%dir %{_prefix}/lib/tcl8/8.5
 %{_prefix}/lib/tcl8/8.4/*.tm
 %{_prefix}/lib/tcl8/8.5/*.tm
 %{_prefix}/lib/tcl8/8.4/platform/*.tm
