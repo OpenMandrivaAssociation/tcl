@@ -13,8 +13,11 @@ Group:		System/Libraries
 License:	BSD
 URL:		http://tcl.tk
 Source0:	http://prdownloads.sourceforge.net/tcl/%{name}%{version}-src.tar.bz2
-Patch0:		tcl-8.4.11-rpath.patch
-Patch1:		tcl8.4.11-soname.diff
+Patch0:		tcl-8.5a6-rpath.patch
+Patch1:		tcl-8.5a6-soname.patch
+# FIXME: Patches 0,1,4,6 were silently removed on 8.5 upgrade, while at
+# least 0,1 should have been rediffed (it was done later after breakage).
+# 4,6 are still presumed unchecked and should be rediffed/dropped:
 Patch4:		tcl-8.4.2-dlopen.patch
 Patch6:		tcl-8.4.12-lib64-auto_path.patch
 Patch7:		tcl-8.5a5-fix_includes.patch
@@ -100,6 +103,8 @@ This package contains development files for %{name}.
 %prep
 %setup -q -n %{name}%{version}
 
+%patch0 -p1 -b .rpath
+%patch1 -p1 -b .soname
 %patch7 -p1
 %patch8 -p1 -b .expect
 
