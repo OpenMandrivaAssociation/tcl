@@ -23,6 +23,7 @@ Patch6:		tcl-8.4.12-lib64-auto_path.patch
 Patch7:		tcl-8.5a5-fix_includes.patch
 Patch8:		tcl-8.5a6-expect-5.43.0.patch
 Requires:	%{libname} = %{version}-%{release}
+Buildroot:	%{_tmppath}/%{name}-%{version}
 
 %description
 Tcl is a simple scripting language designed to be embedded into
