@@ -5,16 +5,17 @@
 Summary:	An embeddable scripting language
 Name:		tcl
 Version:	8.5.1
-Release:	%mkrel 1
+Release:	%mkrel 2
 Group:		System/Libraries
 License:	BSD
 URL:		http://tcl.tk
 Source0:	http://prdownloads.sourceforge.net/tcl/%{name}%{version}-src.tar.gz
 Patch0:		tcl-8.5a6-soname.patch
 Patch1:		tcl-8.5.0-dlopen.patch
-# From Fedora, slightly modified not to refer to /usr/share/tcl8.5
-# (not used on Mandriva). Replaces old p6 by Stew - AdamW 2008/01
-Patch2:		tcl-8.5.0-autopath.patch
+# From Fedora, slightly modified to keep libdir in the list (needed
+# for Mandriva) and not to refer to /usr/share/tcl8.5
+# (not used on Mandriva). Replaces old p6 by Stew - AdamW 2008/03
+Patch2:		tcl-8.5.1-autopath.patch
 Patch3:		tcl-8.5a5-fix_includes.patch
 Patch4:		tcl-8.5.0-expect-5.43.0.patch
 Requires:	%{libname} = %{version}-%{release}
