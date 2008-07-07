@@ -4,7 +4,7 @@
 
 Summary:	An embeddable scripting language
 Name:		tcl
-Version:	8.5.2
+Version:	8.5.3
 Release:	%mkrel 1
 Group:		System/Libraries
 License:	BSD
@@ -175,4 +175,3 @@ rm -rf %{buildroot}
 %attr(0755,root,root) %{_libdir}/*.so
 %attr(0644,root,root) %{_libdir}/*.a
 %attr(0755,root,root) %{_libdir}/tclConfig.sh
-
