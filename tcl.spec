@@ -4,7 +4,7 @@
 
 Summary:	An embeddable scripting language
 Name:		tcl
-Version:	8.5.3
+Version:	8.5.4
 Release:	%mkrel 1
 Group:		System/Libraries
 License:	BSD
