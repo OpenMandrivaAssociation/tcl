@@ -1,24 +1,35 @@
-%define major		8.5
+%define rel	1
+%define pre	a3
+
+%if %pre
+%define release		%mkrel 0.%{pre}.%{rel}
+%define distname	%{name}%{version}%{pre}-src.tar.gz
+%define dirname		%{name}%{version}%{pre}
+%else
+%define release		%mkrel %{rel}
+%define distname	%{name}%{version}-src.tar.gz
+%define dirname		%{name}%{version}
+%endif
+
+%define major		8.6
 %define libname		%mklibname %{name} %{major}
 %define develname	%mklibname %{name} -d
 
 Summary:	An embeddable scripting language
 Name:		tcl
-Version:	8.5.5
-Release:	%mkrel 1
+Version:	8.6
+Release:	%{release}
 Group:		System/Libraries
 License:	BSD
 URL:		http://tcl.tk
-Source0:	http://prdownloads.sourceforge.net/tcl/%{name}%{version}-src.tar.gz
+Source0:	http://downloads.sourceforge.net/%{name}/%{distname}
+Source1:	tcl.macros
 Patch0:		tcl-8.5a6-soname.patch
-Patch1:		tcl-8.5.0-dlopen.patch
-# From Fedora, slightly modified to keep libdir in the list (needed
-# for Mandriva) and not to refer to /usr/share/tcl8.5
-# (not used on Mandriva). Replaces old p6 by Stew - AdamW 2008/03
-Patch2:		tcl-8.5.1-autopath.patch
+Patch1:		tcl-8.6-dlopen.patch
+# From Fedora, replaces old p6 by Stew, rediffed for 8.6 - AdamW 2008/10
+Patch2:		tcl-8.6-autopath.patch
 Patch3:		tcl-8.5a5-fix_includes.patch
 Patch4:		tcl-8.5.0-expect-5.43.0.patch
-Requires:	%{libname} = %{version}-%{release}
 Buildroot:	%{_tmppath}/%{name}-%{version}
 
 %description
@@ -49,7 +60,6 @@ Group:		Development/Other
 Requires:	%{name} = %{version}-%{release}
 Requires:	%{libname} = %{version}-%{release}
 Provides:	%{name}-devel = %{version}-%{release}
-Provides:	lib%{name}-devel = %{version}-%{release}
 Obsoletes:	%mklibname tcl 8.4 -d
 Obsoletes:	%mklibname tcl 8.5 -d
 
@@ -57,8 +67,7 @@ Obsoletes:	%mklibname tcl 8.5 -d
 This package contains development files for %{name}.
 
 %prep
-%setup -q -n %{name}%{version}
-
+%setup -q -n %{dirname}
 %patch0 -p1 -b .soname
 %patch1 -p1 -b .dlopen
 %patch2 -p1 -b .autopath
@@ -71,11 +80,10 @@ pushd unix
     autoconf
     %configure2_5x \
 	--enable-gcc \
-	--enable-threads \
 	--enable-64bit \
 	--disable-rpath \
 	--includedir=%{_includedir}/tcl%{version}
-    %make
+    %make TCL_LIBRARY=%{_datadir}/%{name}%{major}
 
     cp libtcl%{major}.so libtcl%{major}.so.0
 #    make test
@@ -84,13 +92,10 @@ popd
 %install
 rm -rf %{buildroot}
 
-# If %{_libdir} is not %{_prefix}/lib, then define EXTRA_TCLLIB_FILES
-# which contains actual non-architecture-dependent tcl code.
-if [ "%{_libdir}" != "%{_prefix}/lib" ]; then
-  EXTRA_TCLLIB_FILES="%{buildroot}%{_prefix}/lib/*"
-fi
+%makeinstall -C unix TCL_LIBRARY=%{buildroot}%{_datadir}/%{name}%{major}
 
-%makeinstall -C unix
+# create the arch-dependent dir
+mkdir -p %{buildroot}%{_libdir}/%{name}%{major}
 
 # fix libname
 mv %{buildroot}%{_libdir}/libtcl%{major}.so %{buildroot}%{_libdir}/libtcl%{major}.so.0
@@ -122,6 +127,9 @@ perl -pi -e "s|-L`pwd`/unix\b|-L%{_libdir}|g" %{buildroot}%{_libdir}/tclConfig.s
 perl -pi -e "s|`pwd`/unix/lib|%{_libdir}/lib|g" %{buildroot}%{_libdir}/tclConfig.sh
 perl -pi -e "s|`pwd`|%{_includedir}/tcl%{version}|g" %{buildroot}%{_libdir}/tclConfig.sh
 
+# and let it be found (we don't look in /usr/lib any more)
+ln -s %{_libdir}/%{name}Config.sh %{buildroot}/%{_libdir}/%{name}%{major}/%{name}Config.sh
+
 # Arrangements for lib64 platforms
 echo "# placeholder" >> %{develname}.files
 if [[ "%{_lib}" != "lib" ]]; then
@@ -131,6 +139,10 @@ fi
 
 # (fc) make sure .so files are writable by root
 chmod 755 %{buildroot}%{_libdir}/*.so*
+
+# set up the macros
+mkdir -p %{buildroot}%{_sys_macros_dir}
+install -m 0644 %{SOURCE1} %{buildroot}%{_sys_macros_dir}
 
 %if %mdkversion < 200900
 %post -p /sbin/ldconfig -n %{libname}
@@ -146,17 +158,12 @@ rm -rf %{buildroot}
 %files
 %defattr(-,root,root)
 %{_bindir}/*
-%{_prefix}/lib/%{name}%{major}
+%{_datadir}/%{name}%{major}
 %{_mandir}/man1/*
 %{_mandir}/man3/*
 %{_mandir}/mann/*
-%dir %{_prefix}/lib/tcl8
-%dir %{_prefix}/lib/tcl8/8.4
-%dir %{_prefix}/lib/tcl8/8.4/platform
-%dir %{_prefix}/lib/tcl8/8.5
-%{_prefix}/lib/tcl8/8.4/*.tm
-%{_prefix}/lib/tcl8/8.5/*.tm
-%{_prefix}/lib/tcl8/8.4/platform/*.tm
+%{_datadir}/tcl8
+%{_libdir}/%{name}%{major}
 
 %files -n %{libname}
 %defattr(-,root,root)
@@ -175,3 +182,5 @@ rm -rf %{buildroot}
 %attr(0755,root,root) %{_libdir}/*.so
 %attr(0644,root,root) %{_libdir}/*.a
 %attr(0755,root,root) %{_libdir}/tclConfig.sh
+%attr(0644,root,root) %{_sys_macros_dir}/tcl.macros
+
