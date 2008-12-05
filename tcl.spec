@@ -133,6 +133,7 @@ ln -s %{_libdir}/%{name}Config.sh %{buildroot}/%{_libdir}/%{name}%{major}/%{name
 # Arrangements for lib64 platforms
 echo "# placeholder" >> %{develname}.files
 if [[ "%{_lib}" != "lib" ]]; then
+    mkdir -p {buildroot}%{_prefix}/lib
     ln -s %{_libdir}/tclConfig.sh %{buildroot}%{_prefix}/lib/tclConfig.sh
     echo "%{_prefix}/lib/tclConfig.sh" >> %{develname}.files
 fi
