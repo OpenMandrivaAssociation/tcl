@@ -1,5 +1,5 @@
 %define rel	1
-%define pre	a3
+%define pre	b1
 
 %if %pre
 %define release		%mkrel 0.%{pre}.%{rel}
@@ -28,8 +28,9 @@ Patch0:		tcl-8.5a6-soname.patch
 Patch1:		tcl-8.6-dlopen.patch
 # From Fedora, replaces old p6 by Stew, rediffed for 8.6 - AdamW 2008/10
 Patch2:		tcl-8.6-autopath.patch
-Patch3:		tcl-8.5a5-fix_includes.patch
+Patch3:		tcl-8.6b1-fix_includes.patch
 Patch4:		tcl-8.5.0-expect-5.43.0.patch
+Patch5:		tcl-8.6b1-tdbc_location.patch
 Buildroot:	%{_tmppath}/%{name}-%{version}
 
 %description
@@ -73,8 +74,12 @@ This package contains development files for %{name}.
 %patch2 -p1 -b .autopath
 %patch3 -p1
 %patch4 -p1 -b .expect
+%patch5 -p1 -b .tdbc_location
 
 %build
+pushd pkgs/tdbc1.0b1
+autoconf
+popd
 
 pushd unix
     autoconf
@@ -145,6 +150,9 @@ chmod 755 %{buildroot}%{_libdir}/*.so*
 mkdir -p %{buildroot}%{_sys_macros_dir}
 install -m 0644 %{SOURCE1} %{buildroot}%{_sys_macros_dir}
 
+# move this tdbc crap around
+mv %{buildroot}%{_libdir}/%{name}%{major}/tdbc*/libtdbc*.a %{buildroot}%{_libdir}
+
 %if %mdkversion < 200900
 %post -p /sbin/ldconfig -n %{libname}
 %endif
@@ -165,6 +173,7 @@ rm -rf %{buildroot}
 %{_mandir}/mann/*
 %{_datadir}/tcl8
 %{_libdir}/%{name}%{major}
+%exclude %{_libdir}/%{name}%{major}/tdbc*/tdbcConfig.sh
 
 %files -n %{libname}
 %defattr(-,root,root)
@@ -183,5 +192,6 @@ rm -rf %{buildroot}
 %attr(0755,root,root) %{_libdir}/*.so
 %attr(0644,root,root) %{_libdir}/*.a
 %attr(0755,root,root) %{_libdir}/tclConfig.sh
+%attr(0755,root,root) %{_libdir}/%{name}%{major}/tdbc*/tdbcConfig.sh
 %attr(0644,root,root) %{_sys_macros_dir}/tcl.macros
 
