@@ -1,4 +1,4 @@
-%define rel	1
+%define rel	2
 %define pre	b1
 
 %if %pre
