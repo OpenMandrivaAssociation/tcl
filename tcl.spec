@@ -1,4 +1,4 @@
-%define rel	2
+%define rel	3
 %define pre	b1
 
 %if %pre
@@ -84,6 +84,7 @@ popd
 pushd unix
     autoconf
     %configure2_5x \
+	--enable-threads \
 	--enable-gcc \
 	--enable-64bit \
 	--disable-rpath \
