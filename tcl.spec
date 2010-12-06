@@ -1,4 +1,4 @@
-%define rel	4
+%define rel	5
 %define pre	b1
 
 %if %pre
@@ -31,6 +31,8 @@ Patch2:		tcl-8.6-autopath.patch
 Patch3:		tcl-8.6b1-fix_includes.patch
 Patch4:		tcl-8.5.0-expect-5.43.0.patch
 Patch5:		tcl-8.6b1-tdbc_location.patch
+# Originally from Gentoo, fix buffer overflow with GCC 4.5 -D_FORTIFY_SOURCE=2 - wally 2010/12
+Patch6:		tcl8.6b1-fortify.patch
 Buildroot:	%{_tmppath}/%{name}-%{version}
 
 %description
@@ -75,6 +77,7 @@ This package contains development files for %{name}.
 %patch3 -p1
 %patch4 -p1 -b .expect
 %patch5 -p1 -b .tdbc_location
+%patch6 -p1 -b .fortify
 
 %build
 pushd pkgs/tdbc1.0b1
