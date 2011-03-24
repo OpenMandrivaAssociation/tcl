@@ -4,11 +4,11 @@
 %if %pre
 %define release		%mkrel 0.%{pre}.%{rel}
 %define distname	%{name}%{version}%{pre}-src.tar.gz
-%define dirname		%{name}%{version}%{pre}
+%define setname		%{name}%{version}%{pre}
 %else
 %define release		%mkrel %{rel}
 %define distname	%{name}%{version}-src.tar.gz
-%define dirname		%{name}%{version}
+%define setname		%{name}%{version}
 %endif
 
 %define major		8.6
@@ -70,7 +70,7 @@ Obsoletes:	%mklibname tcl 8.5 -d
 This package contains development files for %{name}.
 
 %prep
-%setup -q -n %{dirname}
+%setup -q -n %{setname}
 %patch0 -p1 -b .soname
 %patch1 -p1 -b .dlopen
 %patch2 -p1 -b .autopath
