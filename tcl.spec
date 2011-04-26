@@ -1,4 +1,4 @@
-%define rel	7
+%define rel	8
 %define pre	b1
 
 %if %pre
@@ -24,6 +24,7 @@ License:	BSD
 URL:		http://tcl.tk
 Source0:	http://downloads.sourceforge.net/%{name}/%{distname}
 Source1:	tcl.macros
+BuildRequires:	zlib-devel
 Patch0:		tcl-8.5a6-soname.patch
 Patch1:		tcl-8.6-dlopen.patch
 # From Fedora, replaces old p6 by Stew, rediffed for 8.6 - AdamW 2008/10
