@@ -1,5 +1,5 @@
-%define rel	8
-%define pre	b1
+%define rel	1
+%define pre	b2
 
 %if %pre
 %define release		%mkrel 0.%{pre}.%{rel}
@@ -32,9 +32,6 @@ Patch2:		tcl-8.6-autopath.patch
 Patch3:		tcl-8.6b1-fix_includes.patch
 Patch4:		tcl-8.5.0-expect-5.43.0.patch
 Patch5:		tcl-8.6b1-tdbc_location.patch
-# Originally from Gentoo, fix buffer overflow with GCC 4.5 -D_FORTIFY_SOURCE=2 - wally 2010/12
-Patch6:		tcl8.6b1-fortify.patch
-Buildroot:	%{_tmppath}/%{name}-%{version}
 
 %description
 Tcl is a simple scripting language designed to be embedded into
@@ -75,13 +72,12 @@ This package contains development files for %{name}.
 %patch0 -p1 -b .soname
 %patch1 -p1 -b .dlopen
 %patch2 -p1 -b .autopath
-%patch3 -p1
+%patch3 -p1 -b .hdrLocation
 %patch4 -p1 -b .expect
-%patch5 -p1 -b .tdbc_location
-%patch6 -p1 -b .fortify
+#patch5 -p1 -b .tdbc_location
 
 %build
-pushd pkgs/tdbc1.0b1
+pushd pkgs/tdbc1.0b17
 autoconf
 popd
 
@@ -156,7 +152,10 @@ mkdir -p %{buildroot}%{_sys_macros_dir}
 install -m 0644 %{SOURCE1} %{buildroot}%{_sys_macros_dir}
 
 # move this tdbc crap around
-mv %{buildroot}%{_libdir}/%{name}%{major}/tdbc*/libtdbc*.a %{buildroot}%{_libdir}
+mv %{buildroot}%{_libdir}/tdbc*/libtdbc*.a %{buildroot}%{_libdir}
+mv %buildroot%_libdir/itcl* %buildroot%_libdir/%{name}%{major}/
+mv %buildroot%_libdir/tdbc* %buildroot%_libdir/%{name}%{major}/
+mv %buildroot%_libdir/thread* %buildroot%_libdir/%{name}%{major}/
 
 %if %mdkversion < 200900
 %post -p /sbin/ldconfig -n %{libname}
@@ -197,6 +196,7 @@ rm -rf %{buildroot}
 %attr(0755,root,root) %{_libdir}/*.so
 %attr(0644,root,root) %{_libdir}/*.a
 %attr(0755,root,root) %{_libdir}/tclConfig.sh
+%attr(0755,root,root) %{_libdir}/tclooConfig.sh
 %attr(0755,root,root) %{_libdir}/%{name}%{major}/tdbc*/tdbcConfig.sh
 %attr(0644,root,root) %{_sys_macros_dir}/tcl.macros
-
+%attr(0644,root,root) %{_libdir}/pkgconfig/*.pc
