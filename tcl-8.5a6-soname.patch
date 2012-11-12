@@ -1,0 +1,11 @@
+--- tcl8.5a6/unix/tcl.m4	2007-04-26 20:33:51.000000000 +0300
++++ tcl8.5a6f/unix/tcl.m4	2007-09-07 21:57:01.000000000 +0300
+@@ -1425,6 +1425,8 @@ dnl AC_CHECK_TOOL(AR, ar)
+ 	    # get rid of the warnings.
+ 	    #CFLAGS_OPTIMIZE="${CFLAGS_OPTIMIZE} -D__NO_STRING_INLINES -D__NO_MATH_INLINES"
+ 
++	    TCL_SHLIB_LD_EXTRAS="-Wl,-soname,\${TCL_LIB_FILE}.0"
++
+ 	    SHLIB_LD='${CC} -shared ${CFLAGS} ${LDFLAGS}'
+ 	    DL_OBJS="tclLoadDl.o"
+ 	    DL_LIBS="-ldl"

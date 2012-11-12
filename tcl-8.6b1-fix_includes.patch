@@ -1,0 +1,11 @@
+--- tcl8.6b2/generic/tclPort.h.hdrLocation	2011-04-26 17:14:03.000000000 +0200
++++ tcl8.6b2/generic/tclPort.h	2012-04-20 10:53:24.558549776 +0200
+@@ -22,7 +22,7 @@
+ #endif
+ #include "tcl.h"
+ #if !defined(_WIN32)
+-#   include "tclUnixPort.h"
++#   include "../unix/tclUnixPort.h"
+ #endif
+ 
+ #if defined(__CYGWIN__)

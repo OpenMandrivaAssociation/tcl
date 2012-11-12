@@ -1,0 +1,59 @@
+--- tcl8.6b1/pkgs/tdbc1.0b17/Makefile.in	2008-12-17 10:00:35.000000000 -0800
++++ tcl8.6b1/pkgs/tdbc1.0b17/Makefile.in.new	2008-12-20 10:42:06.000000000 -0800
+@@ -20,6 +20,7 @@
+ #========================================================================
+ 
+ #SAMPLE_NEW_VAR	= @SAMPLE_NEW_VAR@
++TCL_VERSION	= @TCL_VERSION@
+ 
+ #========================================================================
+ # Nothing of the variables below this line should need to be changed.
+@@ -81,8 +82,8 @@
+ DESTDIR		=
+ 
+ PKG_DIR		= $(PACKAGE_NAME)$(PACKAGE_VERSION)
+-pkgdatadir	= $(datadir)/$(PKG_DIR)
+-pkglibdir	= $(libdir)/$(PKG_DIR)
++pkgdatadir	= $(datadir)/tcl$(TCL_VERSION)/$(PKG_DIR)
++pkglibdir	= $(libdir)/tcl$(TCL_VERSION)/$(PKG_DIR)
+ pkgincludedir	= $(includedir)/$(PKG_DIR)
+ 
+ top_builddir	= .
+@@ -289,7 +290,7 @@
+ 	@( \
+ 	echo 'if {[catch {package require Tcl $(TCL_VERSION_REQ)}]} return'; \
+ 	echo 'package ifneeded $(PACKAGE_NAME) $(PACKAGE_VERSION) \
+-	    [list load [file join $$dir $(PKG_LIB_FILE)] $(PACKAGE_NAME)]' \
++	    [list load [file join "$(libdir)" $(PKG_LIB_FILE)] $(PACKAGE_NAME)]' \
+ 	) > pkgIndex.tcl
+ 
+ #========================================================================
+--- tcl8.6b1/pkgs/tdbc1.0b17/configure.in	2008-12-19 17:01:08.000000000 -0800
++++ tcl8.6b1/pkgs/tdbc1.0b17/configure.in.new	2008-12-23 16:15:13.000000000 -0800
+@@ -61,6 +61,7 @@
+     TEA_PATH_CONFIG(tcloo)
+     TEA_LOAD_CONFIG(tcloo)
+   fi
++AC_SUBST(TCL_VERSION)
+ fi
+ 
+ #-----------------------------------------------------------------------
+@@ -201,8 +202,6 @@
+ 
+ 
+ TEAX_INCLUDE_LINE(TDBC_INCLUDE_SPEC, [${includedir}])
+-TEAX_LINK_LINE(TDBC_LIB_SPEC,
+-    [${libdir}/${PACKAGE_NAME}${PACKAGE_VERSION}], [${PACKAGE_NAME}])
+ TEAX_LINK_LINE(TDBC_STUB_LIB_SPEC,
+     [${libdir}/${PACKAGE_NAME}${PACKAGE_VERSION}], [${PACKAGE_NAME}stub])
+ 
+--- tcl8.6b1/pkgs/tdbc1.0b17/tdbcConfig.sh.in	2008-12-17 10:00:35.000000000 -0800
++++ tcl8.6b1/pkgs/tdbc1.0b17/tdbcConfig.sh.in.new	2008-12-23 16:15:31.000000000 -0800
+@@ -10,7 +10,6 @@
+ #
+ # RCS: @(#) $Id: tdbcConfig.sh.in,v 1.4 2007/10/03 12:40:05 dkf Exp $
+ 
+-TDBC_LIB_SPEC="@TDBC_LIB_SPEC@"
+ TDBC_STUB_LIB_SPEC="@TDBC_STUB_LIB_SPEC@"
+ TDBC_INCLUDE_SPEC="@TDBC_INCLUDE_SPEC@"
+ # TDBC_PRIVATE_INCLUDE_SPEC="@TDBC_PRIVATE_INCLUDE_SPEC@"

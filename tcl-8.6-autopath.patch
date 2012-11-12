@@ -1,0 +1,47 @@
+--- tcl8.6b2/library/auto.tcl.autopath	2011-04-26 17:14:03.000000000 +0200
++++ tcl8.6b2/library/auto.tcl	2012-04-20 10:50:51.278546330 +0200
+@@ -80,6 +80,13 @@ proc tcl_findLibrary {basename version p
+ 	    lappend dirs [::${basename}::pkgconfig get scriptdir,runtime]
+ 	}
+ 
++	# 2a. As a sibling of Tcl's script directory
++	if {[catch {
++	    ::tcl::pkgconfig get scriptdir,runtime
++	} value] == 0} {
++	    lappend dirs [file join [file dirname $value] $basename$version]
++	}
++
+ 	# 3. Relative to auto_path directories.  This checks relative to the
+ 	# Tcl library as well as allowing loading of libraries added to the
+ 	# auto_path that is not relative to the core library or binary paths.
+--- tcl8.6b2/library/init.tcl.autopath	2011-08-04 21:54:26.000000000 +0200
++++ tcl8.6b2/library/init.tcl	2012-04-20 10:47:56.311542398 +0200
+@@ -46,16 +46,11 @@ if {![info exists auto_path]} {
+ }
+ namespace eval tcl {
+     variable Dir
+-    foreach Dir [list $::tcl_library [file dirname $::tcl_library]] {
++    foreach Dir [list $::tcl_library] {
+ 	if {$Dir ni $::auto_path} {
+ 	    lappend ::auto_path $Dir
+ 	}
+     }
+-    set Dir [file join [file dirname [file dirname \
+-	    [info nameofexecutable]]] lib]
+-    if {$Dir ni $::auto_path} {
+-	lappend ::auto_path $Dir
+-    }
+     catch {
+ 	foreach Dir $::tcl_pkgPath {
+ 	    if {$Dir ni $::auto_path} {
+--- tcl8.6b2/unix/configure.in.autopath	2011-08-05 20:57:53.000000000 +0200
++++ tcl8.6b2/unix/configure.in	2012-04-20 10:49:29.784544498 +0200
+@@ -857,7 +857,7 @@ if test "$FRAMEWORK_BUILD" = "1" ; then
+ elif test "$prefix/lib" != "$libdir"; then
+     TCL_PACKAGE_PATH="${libdir} ${prefix}/lib ${TCL_PACKAGE_PATH}"
+ else
+-    TCL_PACKAGE_PATH="${prefix}/lib ${TCL_PACKAGE_PATH}"
++    TCL_PACKAGE_PATH="${libdir}/tcl8.6 ${prefix}/share/tcl8.6 ${libdir}/tk8.6 ${TCL_PACKAGE_PATH}"
+ fi
+ 
+ #--------------------------------------------------------------------
