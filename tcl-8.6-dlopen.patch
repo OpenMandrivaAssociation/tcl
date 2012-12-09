@@ -1,43 +1,45 @@
---- tcl8.6b2/unix/tclLoadDl.c.dlopen	2011-04-26 17:14:04.000000000 +0200
-+++ tcl8.6b2/unix/tclLoadDl.c	2012-04-20 10:47:22.045541626 +0200
-@@ -17,6 +17,8 @@
- #   include <dlfcn.h>
+--- tcl8.6a3/unix/tclLoadDl.c	2008-04-27 15:21:33.000000000 -0700
++++ tcl8.6a3/unix/tclLoadDl.c.new	2008-10-15 16:35:21.000000000 -0700
+@@ -33,6 +33,9 @@
+ #ifndef RTLD_GLOBAL
+ #   define RTLD_GLOBAL 0
  #endif
- 
++
 +#include <errno.h>
 +
+ 
  /*
-  * In some systems, like SunOS 4.1.3, the RTLD_NOW flag isn't defined and this
-  * argument to dlopen must always be 1. The RTLD_LOCAL flag doesn't exist on
-@@ -73,7 +75,8 @@ TclpDlopen(
+  *---------------------------------------------------------------------------
+@@ -66,7 +69,8 @@
+ 				 * file. */
  {
      void *handle;
-     Tcl_LoadHandle newHandle;
 -    const char *native;
 +    const char *native, *native_so;
 +    size_t n;
  
      /*
       * First try the full path the user gave us. This is particularly
-@@ -85,7 +88,20 @@ TclpDlopen(
-     /*
-      * Use (RTLD_NOW|RTLD_LOCAL) always, see [Bug #3216070]
-      */
--    handle = dlopen(native, RTLD_NOW | RTLD_LOCAL);
-+    n = strlen(native) + strlen(TCL_SHLIB_EXT);
-+    native_so = malloc(++n);
-+    if (!native_so) {
-+        Tcl_AppendResult(interp, "couldn't load file \"", pathPtr, "\": ", strerror(errno), NULL);
-+        return TCL_ERROR;
-+    }
-+    strcpy(native_so, native);
-+    /*
-+     * if the extension for a dynamic lib is not there, add it
-+     */
-+    if (!strstr(native_so, TCL_SHLIB_EXT))
-+        strcat(native_so, TCL_SHLIB_EXT);
-+    handle = dlopen(native_so, RTLD_NOW | RTLD_LOCAL); /* INTL: Native. */
-+    free(native_so);
-     if (handle == NULL) {
- 	/*
- 	 * Let the OS loader examine the binary search path for whatever
+@@ -87,7 +91,21 @@
+ 	char *fileName = Tcl_GetString(pathPtr);
+ 
+ 	native = Tcl_UtfToExternalDString(NULL, fileName, -1, &ds);
+-	handle = dlopen(native, RTLD_NOW | RTLD_GLOBAL);
++	n = strlen(native);
++	n += strlen(TCL_SHLIB_EXT);
++	native_so = malloc(++n);
++	if (native_so == NULL) {
++	  Tcl_AppendResult(interp, "couldn't load file \"", fileName, "\": ",strerror(errno), NULL);
++	  return TCL_ERROR;
++	}
++	strcpy(native_so, native);
++	/*
++	 * if the extension for a dynamic lib is not there, add it
++	 */
++	if (strstr(native_so, TCL_SHLIB_EXT) == NULL)
++	  strcat(native_so, TCL_SHLIB_EXT);
++	handle = dlopen(native_so, RTLD_NOW | RTLD_GLOBAL);       /* INTL: Native. */
++	free(native_so);
+ 	Tcl_DStringFree(&ds);
+     }
+ 

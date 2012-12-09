@@ -1,5 +1,5 @@
---- tcl8.6b1/pkgs/tdbc1.0b17/Makefile.in	2008-12-17 10:00:35.000000000 -0800
-+++ tcl8.6b1/pkgs/tdbc1.0b17/Makefile.in.new	2008-12-20 10:42:06.000000000 -0800
+--- tcl8.6b1/pkgs/tdbc1.0b1/Makefile.in	2008-12-17 10:00:35.000000000 -0800
++++ tcl8.6b1/pkgs/tdbc1.0b1/Makefile.in.new	2008-12-20 10:42:06.000000000 -0800
 @@ -20,6 +20,7 @@
  #========================================================================
  
@@ -28,8 +28,8 @@
  	) > pkgIndex.tcl
  
  #========================================================================
---- tcl8.6b1/pkgs/tdbc1.0b17/configure.in	2008-12-19 17:01:08.000000000 -0800
-+++ tcl8.6b1/pkgs/tdbc1.0b17/configure.in.new	2008-12-23 16:15:13.000000000 -0800
+--- tcl8.6b1/pkgs/tdbc1.0b1/configure.in	2008-12-19 17:01:08.000000000 -0800
++++ tcl8.6b1/pkgs/tdbc1.0b1/configure.in.new	2008-12-23 16:15:13.000000000 -0800
 @@ -61,6 +61,7 @@
      TEA_PATH_CONFIG(tcloo)
      TEA_LOAD_CONFIG(tcloo)
@@ -47,8 +47,8 @@
  TEAX_LINK_LINE(TDBC_STUB_LIB_SPEC,
      [${libdir}/${PACKAGE_NAME}${PACKAGE_VERSION}], [${PACKAGE_NAME}stub])
  
---- tcl8.6b1/pkgs/tdbc1.0b17/tdbcConfig.sh.in	2008-12-17 10:00:35.000000000 -0800
-+++ tcl8.6b1/pkgs/tdbc1.0b17/tdbcConfig.sh.in.new	2008-12-23 16:15:31.000000000 -0800
+--- tcl8.6b1/pkgs/tdbc1.0b1/tdbcConfig.sh.in	2008-12-17 10:00:35.000000000 -0800
++++ tcl8.6b1/pkgs/tdbc1.0b1/tdbcConfig.sh.in.new	2008-12-23 16:15:31.000000000 -0800
 @@ -10,7 +10,6 @@
  #
  # RCS: @(#) $Id: tdbcConfig.sh.in,v 1.4 2007/10/03 12:40:05 dkf Exp $
