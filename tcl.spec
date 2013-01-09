@@ -1,28 +1,16 @@
-%define rel	12
-%define pre	b1
-
-%if %pre
-%define release		%mkrel 0.%{pre}.%{rel}
-%define distname	%{name}%{version}%{pre}-src.tar.gz
-%define setname		%{name}%{version}%{pre}
-%else
-%define release		%mkrel %{rel}
-%define distname	%{name}%{version}-src.tar.gz
-%define setname		%{name}%{version}
-%endif
-
-%define major		8.6
-%define libname		%mklibname %{name} %{major}
-%define develname	%mklibname %{name} -d
+%define	major	8.6
+%define	libname	%mklibname %{name} %{major}
+%define	devname	%mklibname %{name} -d
 
 Summary:	An embeddable scripting language
 Name:		tcl
 Version:	8.6
-Release:	%{release}
+%define pre	b1
+Release:	%{?pre:0.%{pre}.}12
 Group:		System/Libraries
 License:	BSD
 URL:		http://tcl.tk
-Source0:	http://downloads.sourceforge.net/%{name}/%{distname}
+Source0:	http://downloads.sourceforge.net/%{name}/%{name}%{version}%{?pre}-src.tar.gz
 Source1:	tcl.macros
 BuildRequires:	zlib-devel
 Patch0:		tcl-8.5a6-soname.patch
@@ -34,9 +22,7 @@ Patch4:		tcl-8.5.0-expect-5.43.0.patch
 Patch5:		tcl-8.6b1-tdbc_location.patch
 # Originally from Gentoo, fix buffer overflow with GCC 4.5 -D_FORTIFY_SOURCE=2 - wally 2010/12
 Patch6:		tcl8.6b1-fortify.patch
-Buildroot:	%{_tmppath}/%{name}-%{version}
-Provides:   /usr/bin/tclsh
-Obsoletes:  %{name} < %{version}
+Provides:	/usr/bin/tclsh
 
 %description
 Tcl is a simple scripting language designed to be embedded into
@@ -60,7 +46,7 @@ tclsh, a simple example of a Tcl application.
 If you're installing the tcl package and you want to use Tcl for
 development, you should also install the tk and tclx packages.
 
-%package -n	%{develname}
+%package -n	%{devname}
 Summary:	Development files for %{name}
 Group:		Development/Other
 Requires:	%{name} = %{version}-%{release}
@@ -69,18 +55,18 @@ Provides:	%{name}-devel = %{version}-%{release}
 Obsoletes:	%mklibname tcl 8.4 -d
 Obsoletes:	%mklibname tcl 8.5 -d
 
-%description -n	%{develname}
+%description -n	%{devname}
 This package contains development files for %{name}.
 
 %prep
-%setup -q -n %{setname}
-%patch0 -p1 -b .soname
-%patch1 -p1 -b .dlopen
-%patch2 -p1 -b .autopath
+%setup -q -n %{name}%{version}%{?pre}
+%patch0 -p1 -b .soname~
+%patch1 -p1 -b .dlopen~
+%patch2 -p1 -b .autopath~
 %patch3 -p1
-%patch4 -p1 -b .expect
-%patch5 -p1 -b .tdbc_location
-%patch6 -p1 -b .fortify
+%patch4 -p1 -b .expect~
+%patch5 -p1 -b .tdbc_location~
+%patch6 -p1 -b .fortify~
 pushd pkgs/tdbc1.0b1
 autoconf
 popd
@@ -103,8 +89,6 @@ pushd unix
 popd
 
 %install
-rm -rf %{buildroot}
-
 %makeinstall -C unix TCL_LIBRARY=%{buildroot}%{_datadir}/%{name}%{major}
 
 # create the arch-dependent dir
@@ -144,36 +128,23 @@ perl -pi -e "s|`pwd`|%{_includedir}/tcl%{version}|g" %{buildroot}%{_libdir}/tclC
 ln -s %{_libdir}/%{name}Config.sh %{buildroot}/%{_libdir}/%{name}%{major}/%{name}Config.sh
 
 # Arrangements for lib64 platforms
-echo "# placeholder" >> %{develname}.files
+echo "# placeholder" >> %{devname}.files
 if [[ "%{_lib}" != "lib" ]]; then
     mkdir -p %{buildroot}%{_prefix}/lib
     ln -s %{_libdir}/tclConfig.sh %{buildroot}%{_prefix}/lib/tclConfig.sh
-    echo "%{_prefix}/lib/tclConfig.sh" >> %{develname}.files
+    echo "%{_prefix}/lib/tclConfig.sh" >> %{devname}.files
 fi
 
 # (fc) make sure .so files are writable by root
 chmod 755 %{buildroot}%{_libdir}/*.so*
 
 # set up the macros
-mkdir -p %{buildroot}%{_sys_macros_dir}
-install -m 0644 %{SOURCE1} %{buildroot}%{_sys_macros_dir}
+install -m644 %{SOURCE1} -D %{buildroot}%{_sys_macros_dir}/tcl.macros
 
 # move this tdbc crap around
 mv %{buildroot}%{_libdir}/%{name}%{major}/tdbc*/libtdbc*.a %{buildroot}%{_libdir}
 
-%if %mdkversion < 200900
-%post -p /sbin/ldconfig -n %{libname}
-%endif
-
-%if %mdkversion < 200900
-%postun -p /sbin/ldconfig -n %{libname}
-%endif
-
-%clean
-rm -rf %{buildroot}
-
 %files
-%defattr(-,root,root)
 %{_bindir}/*
 %{_datadir}/%{name}%{major}
 %{_mandir}/man1/*
@@ -184,11 +155,9 @@ rm -rf %{buildroot}
 %exclude %{_libdir}/%{name}%{major}/tdbc*/tdbcConfig.sh
 
 %files -n %{libname}
-%defattr(-,root,root)
 %attr(0755,root,root) %{_libdir}/lib*.so.*
 
-%files -n %{develname} -f %{develname}.files
-%defattr(-,root,root)
+%files -n %{devname} -f %{devname}.files
 %dir %{_includedir}/tcl%{version}
 %dir %{_includedir}/tcl%{version}/compat
 %dir %{_includedir}/tcl%{version}/generic
@@ -203,10 +172,9 @@ rm -rf %{buildroot}
 %attr(0755,root,root) %{_libdir}/%{name}%{major}/tdbc*/tdbcConfig.sh
 %attr(0644,root,root) %{_sys_macros_dir}/tcl.macros
 
-
-
 %changelog
 * Wed Jan  9 2013 Per Øyvind Karlsen <peroyvind@mandriva.org> 8.6-0.b1.12
+- cleanups
 - do autoconf in %%prep
 
 * Tue Apr 26 2011 Paulo Andrade <pcpa@mandriva.com.br> 8.6-0.b1.8mdv2011.0
