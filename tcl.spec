@@ -1,4 +1,4 @@
-%define rel	11
+%define rel	12
 %define pre	b1
 
 %if %pre
@@ -81,14 +81,15 @@ This package contains development files for %{name}.
 %patch4 -p1 -b .expect
 %patch5 -p1 -b .tdbc_location
 %patch6 -p1 -b .fortify
-
-%build
 pushd pkgs/tdbc1.0b1
 autoconf
 popd
-
 pushd unix
-    autoconf
+autoconf
+popd
+
+%build
+pushd unix
     %configure2_5x \
 	--enable-threads \
 	--enable-gcc \
@@ -205,6 +206,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Wed Jan  9 2013 Per Øyvind Karlsen <peroyvind@mandriva.org> 8.6-0.b1.12
+- do autoconf in %%prep
+
 * Tue Apr 26 2011 Paulo Andrade <pcpa@mandriva.com.br> 8.6-0.b1.8mdv2011.0
 + Revision: 659432
 - Add zlib-devel to build requires
