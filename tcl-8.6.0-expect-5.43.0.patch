@@ -1,6 +1,6 @@
---- tcl8.5.0/generic/tclInt.h	2007-12-17 07:28:27.000000000 -0800
-+++ tcl8.5.0/generic/tclInt.h.new	2008-01-11 16:27:45.000000000 -0800
-@@ -2728,7 +2728,7 @@
+--- tcl8.6.0/generic/tclInt.h.expect~	2012-11-05 16:11:15.000000000 +0100
++++ tcl8.6.0/generic/tclInt.h	2013-01-11 15:31:35.135344141 +0100
+@@ -3232,7 +3232,7 @@ MODULE_SCOPE void	TclClockInit(Tcl_Inter
  MODULE_SCOPE int	TclClockOldscanObjCmd(
  			    ClientData clientData, Tcl_Interp *interp,
  			    int objc, Tcl_Obj *const objv[]);
@@ -9,8 +9,8 @@
  			    Tcl_Interp *interp, int objc,
  			    Tcl_Obj *const objv[]);
  MODULE_SCOPE int	Tcl_ConcatObjCmd(ClientData clientData,
-@@ -2889,7 +2889,7 @@
- MODULE_SCOPE int	Tcl_RenameObjCmd(ClientData clientData,
+@@ -3415,7 +3415,7 @@ MODULE_SCOPE int	Tcl_RenameObjCmd(Client
+ MODULE_SCOPE int	Tcl_RepresentationCmd(ClientData clientData,
  			    Tcl_Interp *interp, int objc,
  			    Tcl_Obj *const objv[]);
 -MODULE_SCOPE int	Tcl_ReturnObjCmd(ClientData clientData,

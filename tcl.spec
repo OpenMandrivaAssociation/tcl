@@ -4,9 +4,8 @@
 
 Summary:	An embeddable scripting language
 Name:		tcl
-Version:	8.6
-%define pre	b1
-Release:	%{?pre:0.%{pre}.}12
+Version:	8.6.0
+Release:	%{?pre:0.%{pre}.}1
 Group:		System/Libraries
 License:	BSD
 URL:		http://tcl.tk
@@ -14,14 +13,13 @@ Source0:	http://downloads.sourceforge.net/%{name}/%{name}%{version}%{?pre}-src.t
 Source1:	tcl.macros
 BuildRequires:	zlib-devel
 Patch0:		tcl-8.5a6-soname.patch
-Patch1:		tcl-8.6-dlopen.patch
 # From Fedora, replaces old p6 by Stew, rediffed for 8.6 - AdamW 2008/10
-Patch2:		tcl-8.6-autopath.patch
-Patch3:		tcl-8.6b1-fix_includes.patch
-Patch4:		tcl-8.5.0-expect-5.43.0.patch
-Patch5:		tcl-8.6b1-tdbc_location.patch
-# Originally from Gentoo, fix buffer overflow with GCC 4.5 -D_FORTIFY_SOURCE=2 - wally 2010/12
-Patch6:		tcl8.6b1-fortify.patch
+Patch2:		tcl-8.6.0-autopath.patch
+Patch3:		tcl-8.6.0-fix_includes.patch
+Patch4:		tcl-8.6.0-expect-5.43.0.patch
+# dead?
+#Patch5:		tcl-8.6b1-tdbc_location.patch
+Patch6:		tcl-8.6.0-add-missing-linkage-against-libdl.patch
 Provides:	/usr/bin/tclsh
 
 %description
@@ -61,18 +59,11 @@ This package contains development files for %{name}.
 %prep
 %setup -q -n %{name}%{version}%{?pre}
 %patch0 -p1 -b .soname~
-%patch1 -p1 -b .dlopen~
 %patch2 -p1 -b .autopath~
-%patch3 -p1
+%patch3 -p1 -b .includes~
 %patch4 -p1 -b .expect~
-%patch5 -p1 -b .tdbc_location~
-%patch6 -p1 -b .fortify~
-pushd pkgs/tdbc1.0b1
-autoconf
-popd
-pushd unix
-autoconf
-popd
+#patch5 -p1 -b .tdbc_location~
+%patch6 -p1 -b .ldl_link~
 
 %build
 pushd unix
@@ -128,7 +119,7 @@ perl -pi -e "s|`pwd`|%{_includedir}/tcl%{version}|g" %{buildroot}%{_libdir}/tclC
 ln -s %{_libdir}/%{name}Config.sh %{buildroot}/%{_libdir}/%{name}%{major}/%{name}Config.sh
 
 # Arrangements for lib64 platforms
-echo "# placeholder" >> %{devname}.files
+echo "# placeholder" > %{devname}.files
 if [[ "%{_lib}" != "lib" ]]; then
     mkdir -p %{buildroot}%{_prefix}/lib
     ln -s %{_libdir}/tclConfig.sh %{buildroot}%{_prefix}/lib/tclConfig.sh
@@ -141,8 +132,13 @@ chmod 755 %{buildroot}%{_libdir}/*.so*
 # set up the macros
 install -m644 %{SOURCE1} -D %{buildroot}%{_sys_macros_dir}/tcl.macros
 
-# move this tdbc crap around
-mv %{buildroot}%{_libdir}/%{name}%{major}/tdbc*/libtdbc*.a %{buildroot}%{_libdir}
+# move this crap around
+find %{buildroot} -name \*.a -delete
+mv %{buildroot}%{_libdir}/{itcl,sqlite,tdbc,thread}* %{buildroot}%{_libdir}/%{name}%{major}/
+
+# been unable to track down where this happens for me to patch it properly,
+# so let's just manually move it around for now..
+mv %{buildroot}%{_libdir}/tcl8/%{major}/* %{buildroot}%{_datadir}/tcl8/%{major}
 
 %files
 %{_bindir}/*
@@ -152,10 +148,10 @@ mv %{buildroot}%{_libdir}/%{name}%{major}/tdbc*/libtdbc*.a %{buildroot}%{_libdir
 %{_mandir}/mann/*
 %{_datadir}/tcl8
 %{_libdir}/%{name}%{major}
-%exclude %{_libdir}/%{name}%{major}/tdbc*/tdbcConfig.sh
+%exclude %{_libdir}/%{name}%{major}/*/*Config.sh
 
 %files -n %{libname}
-%attr(0755,root,root) %{_libdir}/lib*.so.*
+%{_libdir}/libtcl%{major}.so.*
 
 %files -n %{devname} -f %{devname}.files
 %dir %{_includedir}/tcl%{version}
@@ -167,12 +163,16 @@ mv %{buildroot}%{_libdir}/%{name}%{major}/tdbc*/libtdbc*.a %{buildroot}%{_libdir
 %attr(0644,root,root) %{_includedir}/tcl%{version}/unix/*.h
 %attr(0644,root,root) %{_includedir}/*.h
 %attr(0755,root,root) %{_libdir}/*.so
-%attr(0644,root,root) %{_libdir}/*.a
-%attr(0755,root,root) %{_libdir}/tclConfig.sh
-%attr(0755,root,root) %{_libdir}/%{name}%{major}/tdbc*/tdbcConfig.sh
+%{_libdir}/tcl*Config.sh
+%{_libdir}/%{name}%{major}/*/*Config.sh
 %attr(0644,root,root) %{_sys_macros_dir}/tcl.macros
+%{_libdir}/pkgconfig/*.pc
 
 %changelog
+* Fri Jan 11 2013 Per Øyvind Karlsen <peroyvind@mandriva.org> 8.6.0-1
+- new version
+- merge lost changes from 8.6-0.b2.1 done by bero previously
+
 * Wed Jan  9 2013 Per Øyvind Karlsen <peroyvind@mandriva.org> 8.6-0.b1.12
 - cleanups
 - do autoconf in %%prep
