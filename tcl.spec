@@ -159,18 +159,20 @@ mv %{buildroot}%{_libdir}/tcl8/%{major}/* %{buildroot}%{_datadir}/tcl8/%{major}
 %dir %{_includedir}/tcl%{version}/compat
 %dir %{_includedir}/tcl%{version}/generic
 %dir %{_includedir}/tcl%{version}/unix
-%attr(0644,root,root) %{_includedir}/tcl%{version}/compat/*.h
-%attr(0644,root,root) %{_includedir}/tcl%{version}/generic/*.h
-%attr(0644,root,root) %{_includedir}/tcl%{version}/unix/*.h
-%attr(0644,root,root) %{_includedir}/*.h
-%attr(0755,root,root) %{_libdir}/*.so
+%{_includedir}/tcl%{version}/compat/*.h
+%{_includedir}/tcl%{version}/generic/*.h
+%{_includedir}/tcl%{version}/unix/*.h
+%{_includedir}/*.h
+%{_libdir}/libtcl.so
+%{_libdir}/libtcl%{major}.so
 %{_libdir}/tcl*Config.sh
 %{_libdir}/%{name}%{major}/*/*Config.sh
-%attr(0644,root,root) %{_sys_macros_dir}/tcl.macros
+%{_sys_macros_dir}/tcl.macros
 %{_libdir}/pkgconfig/*.pc
 
 %changelog
 * Fri Jan 11 2013 Per Øyvind Karlsen <peroyvind@mandriva.org> 8.6.0-1
+- don't explicitly define attributes in %%files
 - new version
 - merge lost changes from 8.6-0.b2.1 done by bero previously
 
