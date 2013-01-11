@@ -69,14 +69,12 @@ This package contains development files for %{name}.
 pushd unix
     %configure2_5x \
 	--enable-threads \
-	--enable-gcc \
 	--enable-64bit \
 	--disable-rpath \
 	--includedir=%{_includedir}/tcl%{version}
     %make TCL_LIBRARY=%{_datadir}/%{name}%{major}
 
     cp libtcl%{major}.so libtcl%{major}.so.0
-#    make test
 popd
 
 %check
