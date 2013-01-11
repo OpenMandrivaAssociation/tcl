@@ -79,6 +79,9 @@ pushd unix
 #    make test
 popd
 
+%check
+#make test
+
 %install
 %makeinstall -C unix TCL_LIBRARY=%{buildroot}%{_datadir}/%{name}%{major}
 
