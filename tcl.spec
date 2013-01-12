@@ -12,7 +12,7 @@ URL:		http://tcl.tk
 Source0:	http://downloads.sourceforge.net/%{name}/%{name}%{version}%{?pre}-src.tar.gz
 Source1:	tcl.macros
 BuildRequires:	pkgconfig(zlib)
-Patch0:		tcl-8.5a6-soname.patch
+Patch0:		tcl-8.5.10-conf.patch
 # From Fedora, replaces old p6 by Stew, rediffed for 8.6 - AdamW 2008/10
 Patch2:		tcl-8.6.0-autopath.patch
 Patch3:		tcl-8.6.0-fix_includes.patch
@@ -58,23 +58,27 @@ This package contains development files for %{name}.
 
 %prep
 %setup -q -n %{name}%{version}%{?pre}
-%patch0 -p1 -b .soname~
+%patch0 -p1 -b .conf~
 %patch2 -p1 -b .autopath~
 %patch3 -p1 -b .includes~
 %patch4 -p1 -b .expect~
 #patch5 -p1 -b .tdbc_location~
 %patch6 -p1 -b .ldl_link~
+pushd unix
+autoconf
+popd
 
 %build
 pushd unix
     %configure2_5x \
 	--enable-threads \
 	--enable-64bit \
+	--enable-symbols \
+	--enable-shared \
 	--disable-rpath \
 	--includedir=%{_includedir}/tcl%{version}
     %make TCL_LIBRARY=%{_datadir}/%{name}%{major}
 
-    cp libtcl%{major}.so libtcl%{major}.so.0
 popd
 
 %check
@@ -85,10 +89,6 @@ popd
 
 # create the arch-dependent dir
 mkdir -p %{buildroot}%{_libdir}/%{name}%{major}
-
-# fix libname
-mv %{buildroot}%{_libdir}/libtcl%{major}.so %{buildroot}%{_libdir}/libtcl%{major}.so.0
-ln -snf libtcl%{major}.so.0 %{buildroot}%{_libdir}/libtcl%{major}.so
 
 # install all headers
 install -d %{buildroot}%{_includedir}/tcl%{version}/compat
@@ -172,6 +172,7 @@ mv %{buildroot}%{_libdir}/tcl8/%{major}/* %{buildroot}%{_datadir}/tcl8/%{major}
 
 %changelog
 * Sat Jan 12 2013 Per Øyvind Karlsen <peroyvind@mandriva.org> 8.6.0-1
+- replace soname patch with tcl.m4 patch from fedora (rhbz#81297)
 - use pkgconfig() deps for buildrequires
 - update summary
 - don't explicitly define attributes in %%files
