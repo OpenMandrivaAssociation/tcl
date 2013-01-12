@@ -2,7 +2,7 @@
 %define	libname	%mklibname %{name} %{major}
 %define	devname	%mklibname %{name} -d
 
-Summary:	An embeddable scripting language
+Summary:	Tool Command Language, pronounced tickle
 Name:		tcl
 Version:	8.6.0
 Release:	%{?pre:0.%{pre}.}1
@@ -171,7 +171,8 @@ mv %{buildroot}%{_libdir}/tcl8/%{major}/* %{buildroot}%{_datadir}/tcl8/%{major}
 %{_libdir}/pkgconfig/*.pc
 
 %changelog
-* Fri Jan 11 2013 Per Øyvind Karlsen <peroyvind@mandriva.org> 8.6.0-1
+* Sat Jan 12 2013 Per Øyvind Karlsen <peroyvind@mandriva.org> 8.6.0-1
+- update summary
 - don't explicitly define attributes in %%files
 - new version
 - merge lost changes from 8.6-0.b2.1 done by bero previously
