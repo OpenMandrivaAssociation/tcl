@@ -102,14 +102,7 @@ pushd %{buildroot}%{_bindir}
     ln -fs tclsh* tclsh
 popd
 
-pushd %{buildroot}%{_libdir}
-cat > lib%{name}.so << EOF
-/* GNU ld script
-   We want -l%{name} to include the actual system library,
-   which is lib%{name}%{major}.so.0  */
-INPUT ( -l%{name}%{major} )
-EOF
-popd
+ln -s libtcl%{major}.so.0 %{buildroot}%{_libdir}/libtcl.so
 
 # fix config script
 perl -pi -e "s|-L`pwd`/unix\b|-L%{_libdir}|g" %{buildroot}%{_libdir}/tclConfig.sh
@@ -117,7 +110,7 @@ perl -pi -e "s|`pwd`/unix/lib|%{_libdir}/lib|g" %{buildroot}%{_libdir}/tclConfig
 perl -pi -e "s|`pwd`|%{_includedir}/tcl%{version}|g" %{buildroot}%{_libdir}/tclConfig.sh
 
 # and let it be found (we don't look in /usr/lib any more)
-ln -s %{_libdir}/%{name}Config.sh %{buildroot}/%{_libdir}/%{name}%{major}/%{name}Config.sh
+ln -s %{_libdir}/%{name}Config.sh %{buildroot}%{_libdir}/%{name}%{major}/%{name}Config.sh
 
 # Arrangements for lib64 platforms
 echo "# placeholder" > %{devname}.files
@@ -169,6 +162,7 @@ mv %{buildroot}%{_libdir}/tcl8/%{major}/* %{buildroot}%{_datadir}/tcl8/%{major}
 
 %changelog
 * Sat Jan 12 2013 Per Øyvind Karlsen <peroyvind@mandriva.org> 8.6.0-1
+- replace libtcl.so linker script with a simple symlink
 - permissions of .so libraries are now handled by spec-helper
 - replace soname patch with tcl.m4 patch from fedora (P1, rhbz#81297)
 - use pkgconfig() deps for buildrequires
