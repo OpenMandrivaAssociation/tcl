@@ -112,19 +112,12 @@ perl -pi -e "s|`pwd`|%{_includedir}/tcl%{version}|g" %{buildroot}%{_libdir}/tclC
 # and let it be found (we don't look in /usr/lib any more)
 ln -s %{_libdir}/%{name}Config.sh %{buildroot}%{_libdir}/%{name}%{major}/%{name}Config.sh
 
-# Arrangements for lib64 platforms
-echo "# placeholder" > %{devname}.files
-if [[ "%{_lib}" != "lib" ]]; then
-    mkdir -p %{buildroot}%{_prefix}/lib
-    ln -s %{_libdir}/tclConfig.sh %{buildroot}%{_prefix}/lib/tclConfig.sh
-    echo "%{_prefix}/lib/tclConfig.sh" >> %{devname}.files
-fi
-
 # set up the macros
 install -m644 %{SOURCE1} -D %{buildroot}%{_sys_macros_dir}/tcl.macros
 
-# move this crap around
 find %{buildroot} -name \*.a -delete
+
+# move this crap around
 mv %{buildroot}%{_libdir}/{itcl,sqlite,tdbc,thread}* %{buildroot}%{_libdir}/%{name}%{major}/
 
 # been unable to track down where this happens for me to patch it properly,
@@ -144,7 +137,7 @@ mv %{buildroot}%{_libdir}/tcl8/%{major}/* %{buildroot}%{_datadir}/tcl8/%{major}
 %files -n %{libname}
 %{_libdir}/libtcl%{major}.so.*
 
-%files -n %{devname} -f %{devname}.files
+%files -n %{devname}
 %dir %{_includedir}/tcl%{version}
 %dir %{_includedir}/tcl%{version}/compat
 %dir %{_includedir}/tcl%{version}/generic
@@ -162,6 +155,7 @@ mv %{buildroot}%{_libdir}/tcl8/%{major}/* %{buildroot}%{_datadir}/tcl8/%{major}
 
 %changelog
 * Sat Jan 12 2013 Per Øyvind Karlsen <peroyvind@mandriva.org> 8.6.0-1
+- drop ancient lib64 symlink hack
 - replace libtcl.so linker script with a simple symlink
 - permissions of .so libraries are now handled by spec-helper
 - replace soname patch with tcl.m4 patch from fedora (P1, rhbz#81297)
