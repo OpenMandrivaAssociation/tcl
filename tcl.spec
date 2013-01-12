@@ -11,7 +11,7 @@ License:	BSD
 URL:		http://tcl.tk
 Source0:	http://downloads.sourceforge.net/%{name}/%{name}%{version}%{?pre}-src.tar.gz
 Source1:	tcl.macros
-BuildRequires:	zlib-devel
+BuildRequires:	pkgconfig(zlib)
 Patch0:		tcl-8.5a6-soname.patch
 # From Fedora, replaces old p6 by Stew, rediffed for 8.6 - AdamW 2008/10
 Patch2:		tcl-8.6.0-autopath.patch
@@ -172,6 +172,7 @@ mv %{buildroot}%{_libdir}/tcl8/%{major}/* %{buildroot}%{_datadir}/tcl8/%{major}
 
 %changelog
 * Sat Jan 12 2013 Per Øyvind Karlsen <peroyvind@mandriva.org> 8.6.0-1
+- use pkgconfig() deps for buildrequires
 - update summary
 - don't explicitly define attributes in %%files
 - new version
