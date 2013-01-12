@@ -103,11 +103,6 @@ popd
 
 ln -s libtcl%{major}.so.0 %{buildroot}%{_libdir}/libtcl.so
 
-# fix config script
-perl -pi -e "s|-L`pwd`/unix\b|-L%{_libdir}|g" %{buildroot}%{_libdir}/tclConfig.sh
-perl -pi -e "s|`pwd`/unix/lib|%{_libdir}/lib|g" %{buildroot}%{_libdir}/tclConfig.sh
-perl -pi -e "s|`pwd`|%{_includedir}/tcl%{version}|g" %{buildroot}%{_libdir}/tclConfig.sh
-
 # and let it be found (we don't look in /usr/lib any more)
 ln -s %{_libdir}/%{name}Config.sh %{buildroot}%{_libdir}/%{name}%{major}/%{name}Config.sh
 
@@ -151,6 +146,7 @@ mv %{buildroot}%{_libdir}/tcl8/%{major}/* %{buildroot}%{_datadir}/tcl8/%{major}
 
 %changelog
 * Sat Jan 12 2013 Per Øyvind Karlsen <peroyvind@mandriva.org> 8.6.0-1
+- drop dead config script regexp fixes
 - place library in a libtcl8.6_not0 package as a temporary workaround for
   previous silly 'libtcl8.6.so.0' soname chosen rather than 'libtcl8.6.so'
 - ditch compat headers
