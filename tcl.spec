@@ -91,12 +91,10 @@ popd
 mkdir -p %{buildroot}%{_libdir}/%{name}%{major}
 
 # install all headers
-install -d %{buildroot}%{_includedir}/tcl%{version}/compat
 install -d %{buildroot}%{_includedir}/tcl%{version}/generic
 install -d %{buildroot}%{_includedir}/tcl%{version}/unix
-install -m0644 compat/*.h %{buildroot}%{_includedir}/tcl%{version}/compat/
-install -m0644 generic/*.h %{buildroot}%{_includedir}/tcl%{version}/generic/
-install -m0644 unix/*.h %{buildroot}%{_includedir}/tcl%{version}/unix/
+install -m644 generic/*.h %{buildroot}%{_includedir}/tcl%{version}/generic/
+install -m644 unix/*.h %{buildroot}%{_includedir}/tcl%{version}/unix/
 
 pushd %{buildroot}%{_bindir}
     ln -fs tclsh* tclsh
@@ -132,7 +130,7 @@ mv %{buildroot}%{_libdir}/tcl8/%{major}/* %{buildroot}%{_datadir}/tcl8/%{major}
 %{_mandir}/mann/*
 %{_datadir}/tcl8
 %{_libdir}/%{name}%{major}
-%exclude %{_libdir}/%{name}%{major}/*/*Config.sh
+exclude %{_libdir}/%{name}%{major}/*/*Config.sh
 
 %files -n %{libname}
 %{_libdir}/libtcl%{major}.so.*
@@ -155,6 +153,7 @@ mv %{buildroot}%{_libdir}/tcl8/%{major}/* %{buildroot}%{_datadir}/tcl8/%{major}
 
 %changelog
 * Sat Jan 12 2013 Per Øyvind Karlsen <peroyvind@mandriva.org> 8.6.0-1
+- ditch compat headers
 - drop ancient lib64 symlink hack
 - replace libtcl.so linker script with a simple symlink
 - permissions of .so libraries are now handled by spec-helper
