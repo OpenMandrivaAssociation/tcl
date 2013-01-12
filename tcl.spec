@@ -127,9 +127,6 @@ if [[ "%{_lib}" != "lib" ]]; then
     echo "%{_prefix}/lib/tclConfig.sh" >> %{devname}.files
 fi
 
-# (fc) make sure .so files are writable by root
-chmod 755 %{buildroot}%{_libdir}/*.so*
-
 # set up the macros
 install -m644 %{SOURCE1} -D %{buildroot}%{_sys_macros_dir}/tcl.macros
 
@@ -172,7 +169,8 @@ mv %{buildroot}%{_libdir}/tcl8/%{major}/* %{buildroot}%{_datadir}/tcl8/%{major}
 
 %changelog
 * Sat Jan 12 2013 Per Øyvind Karlsen <peroyvind@mandriva.org> 8.6.0-1
-- replace soname patch with tcl.m4 patch from fedora (rhbz#81297)
+- permissions of .so libraries are now handled by spec-helper
+- replace soname patch with tcl.m4 patch from fedora (P1, rhbz#81297)
 - use pkgconfig() deps for buildrequires
 - update summary
 - don't explicitly define attributes in %%files
