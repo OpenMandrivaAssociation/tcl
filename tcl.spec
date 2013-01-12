@@ -101,7 +101,7 @@ pushd %{buildroot}%{_bindir}
     ln -fs tclsh* tclsh
 popd
 
-ln -s libtcl%{major}.so.0 %{buildroot}%{_libdir}/libtcl.so
+ln -s libtcl%{major}.so %{buildroot}%{_libdir}/libtcl.so
 
 # and let it be found (we don't look in /usr/lib any more)
 ln -s %{_libdir}/%{name}Config.sh %{buildroot}%{_libdir}/%{name}%{major}/%{name}Config.sh
