@@ -83,7 +83,7 @@ pushd unix
 popd
 
 %check
-#make test
+make -C unix test
 
 %install
 %makeinstall -C unix TCL_LIBRARY=%{buildroot}%{_datadir}/%{name}%{major}
@@ -146,6 +146,7 @@ mv %{buildroot}%{_libdir}/tcl8/%{major}/* %{buildroot}%{_datadir}/tcl8/%{major}
 
 %changelog
 * Sat Jan 12 2013 Per Øyvind Karlsen <peroyvind@mandriva.org> 8.6.0-1
+- enable regression tests under %%check
 - drop dead config script regexp fixes
 - place library in a libtcl8.6_not0 package as a temporary workaround for
   previous silly 'libtcl8.6.so.0' soname chosen rather than 'libtcl8.6.so'
