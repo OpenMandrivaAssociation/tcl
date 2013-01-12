@@ -1,5 +1,6 @@
 %define	major	8.6
-%define	libname	%mklibname %{name} %{major}
+# temporary workaround for incorrect sonaming previously..
+%define	libname	%{mklibname %{name} %{major}}_not0
 %define	devname	%mklibname %{name} -d
 
 Summary:	Tool Command Language, pronounced tickle
@@ -130,22 +131,19 @@ mv %{buildroot}%{_libdir}/tcl8/%{major}/* %{buildroot}%{_datadir}/tcl8/%{major}
 %{_mandir}/mann/*
 %{_datadir}/tcl8
 %{_libdir}/%{name}%{major}
-exclude %{_libdir}/%{name}%{major}/*/*Config.sh
+%exclude %{_libdir}/%{name}%{major}/*/*Config.sh
 
 %files -n %{libname}
-%{_libdir}/libtcl%{major}.so.*
+%{_libdir}/libtcl%{major}.so
 
 %files -n %{devname}
 %dir %{_includedir}/tcl%{version}
-%dir %{_includedir}/tcl%{version}/compat
 %dir %{_includedir}/tcl%{version}/generic
 %dir %{_includedir}/tcl%{version}/unix
-%{_includedir}/tcl%{version}/compat/*.h
 %{_includedir}/tcl%{version}/generic/*.h
 %{_includedir}/tcl%{version}/unix/*.h
 %{_includedir}/*.h
 %{_libdir}/libtcl.so
-%{_libdir}/libtcl%{major}.so
 %{_libdir}/tcl*Config.sh
 %{_libdir}/%{name}%{major}/*/*Config.sh
 %{_sys_macros_dir}/tcl.macros
@@ -153,6 +151,8 @@ exclude %{_libdir}/%{name}%{major}/*/*Config.sh
 
 %changelog
 * Sat Jan 12 2013 Per Øyvind Karlsen <peroyvind@mandriva.org> 8.6.0-1
+- place library in a libtcl8.6_not0 package as a temporary workaround for
+  previous silly 'libtcl8.6.so.0' soname chosen rather than 'libtcl8.6.so'
 - ditch compat headers
 - drop ancient lib64 symlink hack
 - replace libtcl.so linker script with a simple symlink
