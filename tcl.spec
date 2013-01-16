@@ -139,6 +139,7 @@ mv %{buildroot}%{_libdir}/tcl8/%{major}/* %{buildroot}%{_datadir}/tcl8/%{major}
 %{_includedir}/tcl%{version}/unix/*.h
 %{_includedir}/*.h
 %{_libdir}/libtcl.so
+%{_libdir}/lib*stub*.a
 %{_libdir}/tcl*Config.sh
 %{_libdir}/%{name}%{major}/*/*Config.sh
 %{_sys_macros_dir}/tcl.macros
