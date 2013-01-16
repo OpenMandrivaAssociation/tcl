@@ -6,7 +6,7 @@
 Summary:	Tool Command Language, pronounced tickle
 Name:		tcl
 Version:	8.6.0
-Release:	%{?pre:0.%{pre}.}1
+Release:	%{?pre:0.%{pre}.}2
 Group:		System/Libraries
 License:	BSD
 URL:		http://tcl.tk
@@ -109,9 +109,8 @@ ln -s %{_libdir}/%{name}Config.sh %{buildroot}%{_libdir}/%{name}%{major}/%{name}
 # set up the macros
 install -m644 %{SOURCE1} -D %{buildroot}%{_sys_macros_dir}/tcl.macros
 
-find %{buildroot} -name \*.a -delete
-
 # move this crap around
+mv %{buildroot}%{_libdir}/%{name}%{major}/tdbc*/libtdbc*.a %{buildroot}%{_libdir}
 mv %{buildroot}%{_libdir}/{itcl,sqlite,tdbc,thread}* %{buildroot}%{_libdir}/%{name}%{major}/
 
 # been unable to track down where this happens for me to patch it properly,
