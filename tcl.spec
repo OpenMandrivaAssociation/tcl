@@ -110,8 +110,9 @@ ln -s %{_libdir}/%{name}Config.sh %{buildroot}%{_libdir}/%{name}%{major}/%{name}
 install -m644 %{SOURCE1} -D %{buildroot}%{_sys_macros_dir}/tcl.macros
 
 # move this crap around
-mv %{buildroot}%{_libdir}/%{name}%{major}/tdbc*/libtdbc*.a %{buildroot}%{_libdir}
 mv %{buildroot}%{_libdir}/{itcl,sqlite,tdbc,thread}* %{buildroot}%{_libdir}/%{name}%{major}/
+# static *stub* libs are needed
+mv %{buildroot}%{_libdir}/%{name}%{major}/tdbc*/libtdbc*.a %{buildroot}%{_libdir}
 
 # been unable to track down where this happens for me to patch it properly,
 # so let's just manually move it around for now..
