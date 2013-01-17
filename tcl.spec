@@ -6,7 +6,7 @@
 Summary:	Tool Command Language, pronounced tickle
 Name:		tcl
 Version:	8.6.0
-Release:	%{?pre:0.%{pre}.}2
+Release:	%{?pre:0.%{pre}.}3
 Group:		System/Libraries
 License:	BSD
 URL:		http://tcl.tk
@@ -100,6 +100,12 @@ install -m644 unix/*.h %{buildroot}%{_includedir}/tcl%{version}/unix/
 pushd %{buildroot}%{_bindir}
     ln -fs tclsh* tclsh
 popd
+
+# fix config script, otherwise TCL_SRC_DIR gets wrong value and
+# some builds fail because cannot find Tcl private include files
+perl -pi -e "s|-L`pwd`/unix\b|-L%{_libdir}|g" %{buildroot}%{_libdir}/tclConfig.sh
+perl -pi -e "s|`pwd`/unix/lib|%{_libdir}/lib|g" %{buildroot}%{_libdir}/tclConfig.sh
+perl -pi -e "s|`pwd`|%{_includedir}/tcl%{version}|g" %{buildroot}%{_libdir}/tclConfig.sh
 
 ln -s libtcl%{major}.so %{buildroot}%{_libdir}/libtcl.so
 
