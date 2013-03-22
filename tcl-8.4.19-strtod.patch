@@ -1,0 +1,12 @@
+diff --git a/compat/strtod.c b/compat/strtod.c
+index cb9f76d..c244fe8 100644
+--- a/compat/strtod.c
++++ b/compat/strtod.c
+@@ -19,6 +19,7 @@
+ #ifndef NULL
+ #define NULL 0
+ #endif
++#undef strtod
+ 
+ static const int maxExponent = 511;	/* Largest possible base 10 exponent.  Any
+ 				 * exponent larger than this will already
