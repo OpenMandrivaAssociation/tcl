@@ -21,6 +21,7 @@ Patch4:		tcl-8.6.0-expect-5.43.0.patch
 # dead?
 #Patch5:		tcl-8.6b1-tdbc_location.patch
 Patch6:		tcl-8.6.0-add-missing-linkage-against-libdl.patch
+Patch7:		tcl-8.4.19-strtod.patch
 Provides:	/usr/bin/tclsh
 
 %description
@@ -65,6 +66,7 @@ This package contains development files for %{name}.
 %patch4 -p1 -b .expect~
 #patch5 -p1 -b .tdbc_location~
 %patch6 -p1 -b .ldl_link~
+%patch7 -p1 -b .strod
 pushd unix
 autoconf
 popd
