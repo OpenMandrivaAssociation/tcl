@@ -5,18 +5,18 @@
 
 Summary:	Tool Command Language, pronounced tickle
 Name:		tcl
-Version:	8.6.0
-Release:	%{?pre:0.%{pre}.}5
+Version:	8.6.1
+Release:	1
 Group:		System/Libraries
 License:	BSD
 URL:		http://tcl.tk
 Source0:	http://downloads.sourceforge.net/%{name}/%{name}%{version}%{?pre}-src.tar.gz
 Source1:	tcl.macros
 BuildRequires:	pkgconfig(zlib)
-Patch0:		tcl-8.5.10-conf.patch
+Patch0:		tcl-8.6.1-conf.patch
 # From Fedora, replaces old p6 by Stew, rediffed for 8.6 - AdamW 2008/10
 Patch2:		tcl-8.6.0-autopath.patch
-Patch3:		tcl-8.6.0-fix_includes.patch
+Patch3:		tcl-8.6.1-fix_includes.patch
 Patch4:		tcl-8.6.0-expect-5.43.0.patch
 # dead?
 #Patch5:		tcl-8.6b1-tdbc_location.patch
