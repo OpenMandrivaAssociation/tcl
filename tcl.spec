@@ -12,6 +12,7 @@ License:	BSD
 URL:		http://tcl.tk
 Source0:	http://downloads.sourceforge.net/%{name}/%{name}%{version}%{?pre}-src.tar.gz
 Source1:	tcl.macros
+Source2:	tcl.rpmlintrc
 BuildRequires:	pkgconfig(zlib)
 Patch0:		tcl-8.6.1-conf.patch
 # From Fedora, replaces old p6 by Stew, rediffed for 8.6 - AdamW 2008/10
