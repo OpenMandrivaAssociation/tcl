@@ -5,8 +5,8 @@
 
 Summary:	Tool Command Language, pronounced tickle
 Name:		tcl
-Version:	8.6.1
-Release:	5
+Version:	8.6.4
+Release:	1
 Group:		System/Libraries
 License:	BSD
 URL:		http://tcl.tk
@@ -66,7 +66,7 @@ This package contains development files for %{name}.
 %patch3 -p1 -b .includes~
 %patch4 -p1 -b .expect~
 #patch5 -p1 -b .tdbc_location~
-%patch6 -p1 -b .ldl_link~
+%patch6 -p1
 %patch7 -p1 -b .strod
 pushd unix
 autoconf

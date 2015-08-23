@@ -1,5 +1,5 @@
---- tcl8.6.0/pkgs/sqlite3.8.0/Makefile.in.ldl_link~	2013-01-11 16:00:39.168318206 +0100
-+++ tcl8.6.0/pkgs/sqlite3.8.0/Makefile.in	2013-01-11 16:00:54.308570344 +0100
+--- tcl8.6.0/pkgs/sqlite3.8.8.3/Makefile.in.ldl_link~	2013-01-11 16:00:39.168318206 +0100
++++ tcl8.6.0/pkgs/sqlite3.8.8.3/Makefile.in	2013-01-11 16:00:54.308570344 +0100
 @@ -162,7 +162,7 @@ DEFS		= @DEFS@ $(PKG_CFLAGS)
  CONFIG_CLEAN_FILES = Makefile pkgIndex.tcl
  
