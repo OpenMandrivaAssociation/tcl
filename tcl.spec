@@ -77,6 +77,8 @@ autoconf
 popd
 
 %build
+export CC=gcc
+export CXX=g++
 pushd unix
     %configure \
 	--enable-threads \
