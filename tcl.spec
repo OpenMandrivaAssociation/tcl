@@ -2,11 +2,12 @@
 # temporary workaround for incorrect sonaming previously..
 %define libname	%{mklibname %{name} %{major}}_not0
 %define devname	%mklibname %{name} -d
+%define _disable_lto %{nil}
 
 Summary:	Tool Command Language, pronounced tickle
 Name:		tcl
 Version:	8.6.5
-Release:	1
+Release:	1.1
 Group:		System/Libraries
 License:	BSD
 URL:		http://tcl.tk
