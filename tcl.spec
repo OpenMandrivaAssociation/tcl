@@ -2,12 +2,12 @@
 # temporary workaround for incorrect sonaming previously..
 %define libname	%{mklibname %{name} %{major}}_not0
 %define devname	%mklibname %{name} -d
-%define _disable_lto %{nil}
+%define _disable_lto 1
 
 Summary:	Tool Command Language, pronounced tickle
 Name:		tcl
 Version:	8.6.5
-Release:	1.1
+Release:	2
 Group:		System/Libraries
 License:	BSD
 URL:		http://tcl.tk
@@ -81,15 +81,15 @@ popd
 export CC=gcc
 export CXX=g++
 pushd unix
-    %configure \
-	--enable-threads \
-	--enable-64bit \
-	--enable-symbols \
-	--enable-shared \
-	--disable-rpath \
-	--includedir=%{_includedir}/tcl%{version}
+%configure \
+    --enable-threads \
+    --enable-64bit \
+    --enable-symbols \
+    --enable-shared \
+    --disable-rpath \
+    --includedir=%{_includedir}/tcl%{version}
 
-    %make CFLAGS="%{optflags}" TCL_LIBRARY=%{_datadir}/%{name}%{major}
+%make CFLAGS="%{optflags}" TCL_LIBRARY=%{_datadir}/%{name}%{major}
 
 popd
 
