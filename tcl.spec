@@ -1,4 +1,4 @@
-%define major 8.6
+%define major %(echo %{version} |cut -d. -f1-2)
 # temporary workaround for incorrect sonaming previously..
 %define libname	%{mklibname %{name} %{major}}_not0
 %define devname	%mklibname %{name} -d
@@ -6,7 +6,7 @@
 
 Summary:	Tool Command Language, pronounced tickle
 Name:		tcl
-Version:	8.6.7
+Version:	8.6.8
 Release:	1
 Group:		System/Libraries
 License:	BSD
