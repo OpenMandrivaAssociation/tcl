@@ -141,22 +141,19 @@ install -m 0644 -D %{SOURCE1} %{buildroot}%{_sysconfdir}/rpm/macros.d/%{name}.ma
 %{_mandir}/man1/*
 %{_datadir}/tcl8
 %{_libdir}/%{name}%{major}
-%exclude %{_libdir}/%{name}%{major}/*/*Config.sh
+%exclude %{_libdir}/%{name}%{major}/*Config.sh
 
 %files -n %{libname}
 %{_libdir}/libtcl%{major}.so
 
 %files -n %{devname}
-%dir %{_includedir}/tcl%{version}
-%dir %{_includedir}/tcl%{version}/generic
-%dir %{_includedir}/tcl%{version}/unix
-%{_includedir}/tcl%{version}/generic/*.h
-%{_includedir}/tcl%{version}/unix/*.h
+%dir %{_includedir}/tcl-private
 %{_includedir}/*.h
+%{_includedir}/tcl-private/*
 %{_libdir}/libtcl.so
 %{_libdir}/lib*stub*.a
 %{_libdir}/tcl*Config.sh
-%{_libdir}/%{name}%{major}/*/*Config.sh
+%{_libdir}/%{name}%{major}/*Config.sh
 %{_sysconfdir}/rpm/macros.d/%{name}.macros
 %{_libdir}/pkgconfig/*.pc
 
