@@ -115,23 +115,23 @@ ln -s tclsh%{major} %{buildroot}%{_bindir}/tclsh
 # for linking with -lib%%{name}
 ln -s lib%{name}%{major}.so %{buildroot}%{_libdir}/lib%{name}.so
 
-mkdir -p %{buildroot}%{_libdir}/%{name}%{major}
+mkdir -p %{buildroot}/%{_libdir}/%{name}%{major}
 
 # postgresql and maybe other packages too need tclConfig.sh
-# paths don't look at /usr/lib for efficiency, so we symlink into tcl8.5 for now
-ln -s %{_libdir}/%{name}Config.sh %{buildroot}%{_libdir}/%{name}%{major}/%{name}Config.sh
+# paths don't look at /usr/lib for efficiency, so we symlink into tcl8.6 for now
+ln -s %{_libdir}/%{name}Config.sh %{buildroot}/%{_libdir}/%{name}%{major}/%{name}Config.sh
 
-mkdir -p %{buildroot}%{_includedir}/%{name}-private/{generic,unix}
-find generic unix -name "*.h" -exec cp -p '{}' %{buildroot}%{_includedir}/%{name}-private/'{}' ';'
-( cd %{buildroot}%{_includedir}
+mkdir -p %{buildroot}/%{_includedir}/%{name}-private/{generic,unix}
+find generic unix -name "*.h" -exec cp -p '{}' %{buildroot}/%{_includedir}/%{name}-private/'{}' ';'
+( cd %{buildroot}/%{_includedir}
 	for i in *.h ; do
-		[ -f %{buildroot}%{_includedir}/%{name}-private/generic/$i ] && ln -sf ../../$i %{buildroot}%{_includedir}/%{name}-private/generic ;
+		[ -f %{buildroot}/%{_includedir}/%{name}-private/generic/$i ] && ln -sf ../../$i %{buildroot}/%{_includedir}/%{name}-private/generic ;
 	done
 )
 
 # remove buildroot traces
-sed -i -e "s|$PWD/unix|%{_libdir}|; s|$PWD|%{_includedir}/%{name}-private|" %{buildroot}%{_libdir}/%{name}Config.sh
-rm -rf %{buildroot}%{_datadir}/%{name}%{major}/ldAix
+sed -i -e "s|$PWD/unix|%{_libdir}|; s|$PWD|%{_includedir}/%{name}-private|" %{buildroot}/%{_libdir}/%{name}Config.sh
+rm -rf %{buildroot}/%{_datadir}/%{name}%{major}/ldAix
 
 install -m 0644 -D %{SOURCE1} %{buildroot}%{_sysconfdir}/rpm/macros.d/%{name}.macros
 
