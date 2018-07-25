@@ -7,7 +7,7 @@
 Summary:	Tool Command Language, pronounced tickle
 Name:		tcl
 Version:	8.6.8
-Release:	3
+Release:	4
 Group:		System/Libraries
 License:	BSD
 URL:		http://tcl.tk
@@ -26,6 +26,7 @@ Patch6:		tcl-8.6.0-add-missing-linkage-against-libdl.patch
 Patch7:		tcl-8.4.19-strtod.patch
 Provides:	/usr/bin/tclsh
 Provides:	tcl(abi) = %{major}
+Recommends:	tcl-doc >= %{EVRD}
 
 %description
 Tcl is a simple scripting language designed to be embedded into
@@ -60,6 +61,14 @@ Obsoletes:	%mklibname tcl 8.5 -d
 
 %description -n	%{devname}
 This package contains development files for %{name}.
+
+%package doc
+Summary:	Documentation files for %{name}
+Group:		Development/Other
+Requires:	%{name} = %{EVRD}
+
+%description doc
+Documentation files for %{name}.
 
 %prep
 %setup -q -n %{name}%{version}%{?pre}
@@ -99,48 +108,35 @@ make -C unix test
 %install
 %makeinstall -C unix TCL_LIBRARY=%{buildroot}%{_datadir}/%{name}%{major}
 
-# create the arch-dependent dir
-mkdir -p %{buildroot}%{_libdir}/%{name}%{major}
+ln -s tclsh%{majorver} %{buildroot}%{_bindir}/tclsh
 
-# install all headers
-install -d %{buildroot}%{_includedir}/tcl%{version}/generic
-install -d %{buildroot}%{_includedir}/tcl%{version}/unix
-install -m644 generic/*.h %{buildroot}%{_includedir}/tcl%{version}/generic/
-install -m644 unix/*.h %{buildroot}%{_includedir}/tcl%{version}/unix/
+# for linking with -lib%%{name}
+ln -s lib%{name}%{majorver}.so %{buildroot}%{_libdir}/lib%{name}.so
 
-pushd %{buildroot}%{_bindir}
-    ln -fs tclsh* tclsh
-popd
+mkdir -p %{buildroot}%{_libdir}/%{name}%{majorver}
 
-# fix config script, otherwise TCL_SRC_DIR gets wrong value and
-# some builds fail because cannot find Tcl private include files
-perl -pi -e "s|-L`pwd`/unix\b|-L%{_libdir}|g" %{buildroot}%{_libdir}/tclConfig.sh
-perl -pi -e "s|`pwd`/unix/lib|%{_libdir}/lib|g" %{buildroot}%{_libdir}/tclConfig.sh
-perl -pi -e "s|`pwd`|%{_includedir}/tcl%{version}|g" %{buildroot}%{_libdir}/tclConfig.sh
+# postgresql and maybe other packages too need tclConfig.sh
+# paths don't look at /usr/lib for efficiency, so we symlink into tcl8.5 for now
+ln -s %{_libdir}/%{name}Config.sh %{buildroot}%{_libdir}/%{name}%{majorver}/%{name}Config.sh
 
-ln -s libtcl%{major}.so %{buildroot}%{_libdir}/libtcl.so
+mkdir -p %{buildroot}%{_includedir}/%{name}-private/{generic,unix}
+find generic unix -name "*.h" -exec cp -p '{}' %{buildroot}%{_includedir}/%{name}-private/'{}' ';'
+( cd %{buildroot}%{_includedir}
+	for i in *.h ; do
+		[ -f %{buildroot}%{_includedir}/%{name}-private/generic/$i ] && ln -sf ../../$i %{buildroot}%{_includedir}/%{name}-private/generic ;
+	done
+)
 
-# and let it be found (we don't look in /usr/lib any more)
-ln -s %{_libdir}/%{name}Config.sh %{buildroot}%{_libdir}/%{name}%{major}/%{name}Config.sh
+# remove buildroot traces
+sed -i -e "s|$PWD/unix|%{_libdir}|; s|$PWD|%{_includedir}/%{name}-private|" %{buildroot}%{_libdir}/%{name}Config.sh
+rm -rf %{buildroot}%{_datadir}/%{name}%{majorver}/ldAix
 
-# set up the macros
-install -m644 %{SOURCE1} -D %{buildroot}%{_sys_macros_dir}/tcl.macros
-
-# move this crap around
-mv %{buildroot}%{_libdir}/{itcl,sqlite,tdbc,thread}* %{buildroot}%{_libdir}/%{name}%{major}/
-# static *stub* libs are needed
-mv %{buildroot}%{_libdir}/%{name}%{major}/tdbc*/libtdbc*.a %{buildroot}%{_libdir}
-
-# been unable to track down where this happens for me to patch it properly,
-# so let's just manually move it around for now..
-mv %{buildroot}%{_libdir}/tcl8/%{major}/* %{buildroot}%{_datadir}/tcl8/%{major}
+install -m 0644 -D %{SOURCE1} %{buildroot}%{_sysconfdir}/rpm/macros.d/%{name}.macros
 
 %files
 %{_bindir}/*
 %{_datadir}/%{name}%{major}
 %{_mandir}/man1/*
-%{_mandir}/man3/*
-%{_mandir}/mann/*
 %{_datadir}/tcl8
 %{_libdir}/%{name}%{major}
 %exclude %{_libdir}/%{name}%{major}/*/*Config.sh
@@ -159,5 +155,9 @@ mv %{buildroot}%{_libdir}/tcl8/%{major}/* %{buildroot}%{_datadir}/tcl8/%{major}
 %{_libdir}/lib*stub*.a
 %{_libdir}/tcl*Config.sh
 %{_libdir}/%{name}%{major}/*/*Config.sh
-%{_sys_macros_dir}/tcl.macros
+%{_sysconfdir}/rpm/macros.d/%{name}.macros
 %{_libdir}/pkgconfig/*.pc
+
+%files doc
+%{_mandir}/man3/*
+%{_mandir}/mann/*
