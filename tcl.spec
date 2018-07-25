@@ -74,6 +74,7 @@ Documentation files for %{name}.
 %prep
 %setup -q -n %{name}%{version}%{?pre}
 rm -r compat/zlib
+rm -rf pkgs/sqlite3
 chmod -x generic/tclStrToD.c
 
 %patch0 -p1 -b .conf~
@@ -83,14 +84,12 @@ chmod -x generic/tclStrToD.c
 #patch5 -p1 -b .tdbc_location~
 %patch6 -p1
 %patch7 -p1 -b .strod
-pushd unix
-autoconf
-popd
 
 %build
 export CC=gcc
 export CXX=g++
 cd unix
+autoconf
 %configure \
     --enable-threads \
     --enable-64bit \
@@ -100,7 +99,7 @@ cd unix
     --without-tzdata \
     --includedir=%{_includedir}/tcl%{version}
 
-%make CFLAGS="%{optflags}" TCL_LIBRARY=%{_datadir}/%{name}%{major}
+%make_build CFLAGS="%{optflags}" TCL_LIBRARY=%{_datadir}/%{name}%{major}
 
 cd -
 
@@ -108,7 +107,7 @@ cd -
 make -C unix test
 
 %install
-%makeinstall -C unix TCL_LIBRARY=%{buildroot}%{_datadir}/%{name}%{major}
+%make_install -C unix TCL_LIBRARY=%{buildroot}%{_datadir}/%{name}%{major}
 
 ln -s tclsh%{major} %{buildroot}%{_bindir}/tclsh
 
@@ -142,6 +141,16 @@ install -m 0644 -D %{SOURCE1} %{buildroot}%{_sysconfdir}/rpm/macros.d/%{name}.ma
 %{_datadir}/tcl8
 %{_libdir}/%{name}%{major}
 %exclude %{_libdir}/%{name}%{major}/*Config.sh
+%{_libdir}/itcl4.*
+%{_libdir}/sqlite3.*
+%dir %{_libdir}/tcl8
+%dir %{_libdir}/tcl8/%{major}
+%{_libdir}/tcl8/%{major}/tdbc
+%{_libdir}/tdbc1.*
+%{_libdir}/tdbcmysql1.*
+%{_libdir}/tdbcodbc1.*
+%{_libdir}/tdbcpostgres1.*
+%{_libdir}/thread2.*
 
 %files -n %{libname}
 %{_libdir}/libtcl%{major}.so
