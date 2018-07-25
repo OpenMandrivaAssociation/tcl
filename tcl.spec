@@ -125,7 +125,7 @@ mkdir -p %{buildroot}/%{_includedir}/%{name}-private/{generic,unix}
 find generic unix -name "*.h" -exec cp -p '{}' %{buildroot}/%{_includedir}/%{name}-private/'{}' ';'
 ( cd %{buildroot}/%{_includedir}
 	for i in *.h ; do
-		[ -f %{buildroot}/%{_includedir}/%{name}-private/generic/$i ] && ln -sf ../../$i %{buildroot}/%{_includedir}/%{name}-private/generic ;
+		[ -f %{buildroot}/%{_includedir}/%{name}-private/generic/$i ] && ln -sf ../../$i %{buildroot}/%{_includedir}/%{name}-private/generic ||: ;
 	done
 )
 
