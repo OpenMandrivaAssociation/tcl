@@ -15,6 +15,7 @@ Source0:	http://downloads.sourceforge.net/%{name}/%{name}%{version}%{?pre}-src.t
 Source1:	tcl.macros
 Source2:	tcl.rpmlintrc
 BuildRequires:	pkgconfig(zlib)
+BuildRequires:	timezone
 Patch0:		tcl-8.6.1-conf.patch
 # From Fedora, replaces old p6 by Stew, rediffed for 8.6 - AdamW 2008/10
 Patch2:		tcl-8.6.0-autopath.patch
@@ -89,18 +90,19 @@ popd
 %build
 export CC=gcc
 export CXX=g++
-pushd unix
+cd unix
 %configure \
     --enable-threads \
     --enable-64bit \
     --enable-symbols \
     --enable-shared \
     --disable-rpath \
+    --without-tzdata \
     --includedir=%{_includedir}/tcl%{version}
 
 %make CFLAGS="%{optflags}" TCL_LIBRARY=%{_datadir}/%{name}%{major}
 
-popd
+cd -
 
 %check
 make -C unix test
@@ -108,16 +110,16 @@ make -C unix test
 %install
 %makeinstall -C unix TCL_LIBRARY=%{buildroot}%{_datadir}/%{name}%{major}
 
-ln -s tclsh%{majorver} %{buildroot}%{_bindir}/tclsh
+ln -s tclsh%{major} %{buildroot}%{_bindir}/tclsh
 
 # for linking with -lib%%{name}
-ln -s lib%{name}%{majorver}.so %{buildroot}%{_libdir}/lib%{name}.so
+ln -s lib%{name}%{major}.so %{buildroot}%{_libdir}/lib%{name}.so
 
-mkdir -p %{buildroot}%{_libdir}/%{name}%{majorver}
+mkdir -p %{buildroot}%{_libdir}/%{name}%{major}
 
 # postgresql and maybe other packages too need tclConfig.sh
 # paths don't look at /usr/lib for efficiency, so we symlink into tcl8.5 for now
-ln -s %{_libdir}/%{name}Config.sh %{buildroot}%{_libdir}/%{name}%{majorver}/%{name}Config.sh
+ln -s %{_libdir}/%{name}Config.sh %{buildroot}%{_libdir}/%{name}%{major}/%{name}Config.sh
 
 mkdir -p %{buildroot}%{_includedir}/%{name}-private/{generic,unix}
 find generic unix -name "*.h" -exec cp -p '{}' %{buildroot}%{_includedir}/%{name}-private/'{}' ';'
@@ -129,7 +131,7 @@ find generic unix -name "*.h" -exec cp -p '{}' %{buildroot}%{_includedir}/%{name
 
 # remove buildroot traces
 sed -i -e "s|$PWD/unix|%{_libdir}|; s|$PWD|%{_includedir}/%{name}-private|" %{buildroot}%{_libdir}/%{name}Config.sh
-rm -rf %{buildroot}%{_datadir}/%{name}%{majorver}/ldAix
+rm -rf %{buildroot}%{_datadir}/%{name}%{major}/ldAix
 
 install -m 0644 -D %{SOURCE1} %{buildroot}%{_sysconfdir}/rpm/macros.d/%{name}.macros
 
