@@ -136,9 +136,7 @@ install -m 0644 -D %{SOURCE1} %{buildroot}%{_sysconfdir}/rpm/macros.d/%{name}.ma
 
 %files
 %{_bindir}/*
-%{_datadir}/%{name}%{major}
 %{_mandir}/man1/*
-%{_datadir}/tcl8
 %{_libdir}/%{name}%{major}
 %exclude %{_libdir}/%{name}%{major}/*Config.sh
 %{_libdir}/itcl4.*
