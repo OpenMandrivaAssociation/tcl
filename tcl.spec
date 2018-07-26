@@ -139,23 +139,13 @@ install -m 0644 -D %{SOURCE1} %{buildroot}%{_sysconfdir}/rpm/macros.d/%{name}.ma
 %{_mandir}/man1/*
 %{_libdir}/%{name}%{major}
 %{_datadir}/%{name}%{major}
+%{_datadir}/%{name}8
 %exclude %{_libdir}/%{name}%{major}/*Config.sh
-%{_libdir}/itcl4.*
-%{_libdir}/sqlite3.*
-%dir %{_libdir}/tcl8
-%dir %{_libdir}/tcl8/%{major}
-%{_libdir}/tcl8/%{major}/tdbc
-%{_libdir}/tdbc1.*
-%{_libdir}/tdbcmysql1.*
-%{_libdir}/tdbcodbc1.*
-%{_libdir}/tdbcpostgres1.*
-%{_libdir}/thread2.*
 
 %files -n %{libname}
 %{_libdir}/libtcl%{major}.so
 
 %files -n %{devname}
-%dir %{_includedir}/tcl-private
 %{_includedir}/*
 %{_libdir}/libtcl.so
 %{_libdir}/lib*stub*.a
