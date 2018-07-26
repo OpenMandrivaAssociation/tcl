@@ -138,6 +138,7 @@ install -m 0644 -D %{SOURCE1} %{buildroot}%{_sysconfdir}/rpm/macros.d/%{name}.ma
 %{_bindir}/*
 %{_mandir}/man1/*
 %{_libdir}/%{name}%{major}
+%{_datadir}/%{name}%{major}
 %exclude %{_libdir}/%{name}%{major}/*Config.sh
 %{_libdir}/itcl4.*
 %{_libdir}/sqlite3.*
@@ -156,7 +157,6 @@ install -m 0644 -D %{SOURCE1} %{buildroot}%{_sysconfdir}/rpm/macros.d/%{name}.ma
 %files -n %{devname}
 %dir %{_includedir}/tcl-private
 %{_includedir}/*
-%{_includedir}/tcl-private/*
 %{_libdir}/libtcl.so
 %{_libdir}/lib*stub*.a
 %{_libdir}/tcl*Config.sh
