@@ -155,7 +155,7 @@ install -m 0644 -D %{SOURCE1} %{buildroot}%{_sysconfdir}/rpm/macros.d/%{name}.ma
 
 %files -n %{devname}
 %dir %{_includedir}/tcl-private
-%{_includedir}/*.h
+%{_includedir}/*
 %{_includedir}/tcl-private/*
 %{_libdir}/libtcl.so
 %{_libdir}/lib*stub*.a
