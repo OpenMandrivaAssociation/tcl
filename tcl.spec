@@ -134,7 +134,7 @@ rm -rf %{buildroot}/%{_datadir}/%{name}%{major}/ldAix
 
 install -m 0644 -D %{SOURCE1} %{buildroot}%{_sysconfdir}/rpm/macros.d/%{name}.macros
 
-for i in itcl4.1.1 sqlite3.21.0 tdbc1.0.6 tdbcmysql1.0.6 tdbcodbc1.0.6 tdbcpostgres1.0.6 thread2.8.2
+for i in itcl4.1.1 sqlite3.21.0 tdbc1.0.6 tdbcmysql1.0.6 tdbcodbc1.0.6 tdbcpostgres1.0.6 thread2.8.2; do
     mv -f %{buildroot}%{_libdir}/"$i" %{buildroot}%{_libdir}/tcl8/"$i"
 done
 
