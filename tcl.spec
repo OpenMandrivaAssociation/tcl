@@ -7,7 +7,7 @@
 Summary:	Tool Command Language, pronounced tickle
 Name:		tcl
 Version:	8.6.8
-Release:	4
+Release:	5
 Group:		System/Libraries
 License:	BSD
 URL:		http://tcl.tk
