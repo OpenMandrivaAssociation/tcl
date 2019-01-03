@@ -86,6 +86,11 @@ chmod -x generic/tclStrToD.c
 %patch7 -p1 -b .strod
 
 %build
+# (tpg) fix build
+%ifarch znver1
+%global optflags %{optflags} -fPIC
+%endif
+
 export CC=gcc
 export CXX=g++
 cd unix
