@@ -87,7 +87,7 @@ chmod -x generic/tclStrToD.c
 
 %build
 # (tpg) fix build
-%ifarch znver1
+%ifarch znver1 riscv64
 %global optflags %{optflags} -fPIC
 %endif
 
