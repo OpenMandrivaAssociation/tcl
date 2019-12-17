@@ -21,7 +21,8 @@ BuildRequires:	timezone
 # From Fedora, replaces old p6 by Stew, rediffed for 8.6 - AdamW 2008/10
 Patch0:		https://src.fedoraproject.org/rpms/tcl/raw/master/f/tcl-8.6.10-autopath.patch
 Patch1:		https://src.fedoraproject.org/rpms/tcl/raw/master/f/tcl-8.6.10-conf.patch
-Patch4:		https://src.fedoraproject.org/rpms/tcl/raw/master/f/tcl-8.6.10-hidden.patch
+Patch2:		https://src.fedoraproject.org/rpms/tcl/raw/master/f/tcl-8.6.10-hidden.patch
+Patch3:		tcl-8.6.0-add-missing-linkage-against-libdl.patch
 Provides:	/usr/bin/tclsh
 Provides:	tcl(abi) = %{major}
 Recommends:	tcl-doc >= %{EVRD}
@@ -70,6 +71,7 @@ Documentation files for %{name}.
 
 %prep
 %autosetup -n %{name}%{version}%{?pre} -p1
+
 rm -r compat/zlib
 rm -rf pkgs/sqlite3
 chmod -x generic/tclStrToD.c
