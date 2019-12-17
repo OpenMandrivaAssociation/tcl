@@ -89,7 +89,7 @@ autoconf
     --without-tzdata \
     --includedir=%{_includedir}/tcl%{version}
 
-%make_build CFLAGS="%{optflags}" TCL_LIBRARY=%{_datadir}/%{name}%{major}
+%make_build CFLAGS="%{optflags}" LDFLAGS="%{ldflags} -Wl,-z,notext" TCL_LIBRARY=%{_datadir}/%{name}%{major}
 
 cd -
 
