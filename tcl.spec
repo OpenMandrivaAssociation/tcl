@@ -3,7 +3,7 @@
 %define libname %{mklibname %{name} %{major}}_not0
 %define devname %mklibname %{name} -d
 %define _disable_lto 1
-
+%global optflags %{optflags} -fPIC
 %global ldflags %{ldflags} -Wl,-z,notext
 
 Summary:	Tool Command Language, pronounced tickle
@@ -75,10 +75,6 @@ rm -rf pkgs/sqlite3
 chmod -x generic/tclStrToD.c
 
 %build
-# (tpg) fix build
-%ifarch znver1 riscv64
-%global optflags %{optflags} -fPIC
-%endif
 
 cd unix
 autoconf
