@@ -20,7 +20,6 @@ BuildRequires:	timezone
 Patch0:		https://src.fedoraproject.org/rpms/tcl/raw/master/f/tcl-8.6.10-autopath.patch
 Patch1:		https://src.fedoraproject.org/rpms/tcl/raw/master/f/tcl-8.6.10-conf.patch
 Patch4:		https://src.fedoraproject.org/rpms/tcl/raw/master/f/tcl-8.6.10-hidden.patch
-Patch5:		tcl-8.6.0-add-missing-linkage-against-libdl.patch
 Patch6:		tcl-8.4.19-strtod.patch
 Provides:	/usr/bin/tclsh
 Provides:	tcl(abi) = %{major}
