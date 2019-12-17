@@ -1,13 +1,13 @@
 %define major %(echo %{version} |cut -d. -f1-2)
 # temporary workaround for incorrect sonaming previously..
-%define libname	%{mklibname %{name} %{major}}_not0
-%define devname	%mklibname %{name} -d
+%define libname %{mklibname %{name} %{major}}_not0
+%define devname %mklibname %{name} -d
 %define _disable_lto 1
 
 Summary:	Tool Command Language, pronounced tickle
 Name:		tcl
-Version:	8.6.8
-Release:	5
+Version:	8.6.10
+Release:	1
 Group:		System/Libraries
 License:	BSD
 URL:		http://tcl.tk
@@ -16,15 +16,12 @@ Source1:	tcl.macros
 Source2:	tcl.rpmlintrc
 BuildRequires:	pkgconfig(zlib)
 BuildRequires:	timezone
-Patch0:		tcl-8.6.1-conf.patch
 # From Fedora, replaces old p6 by Stew, rediffed for 8.6 - AdamW 2008/10
-Patch2:		tcl-8.6.0-autopath.patch
-Patch3:		tcl-8.6.1-fix_includes.patch
-Patch4:		tcl-8.6.0-expect-5.43.0.patch
-# dead?
-#Patch5:		tcl-8.6b1-tdbc_location.patch
-Patch6:		tcl-8.6.0-add-missing-linkage-against-libdl.patch
-Patch7:		tcl-8.4.19-strtod.patch
+Patch0:		https://src.fedoraproject.org/rpms/tcl/raw/master/f/tcl-8.6.10-autopath.patch
+Patch1:		https://src.fedoraproject.org/rpms/tcl/raw/master/f/tcl-8.6.10-conf.patch
+Patch4:		https://src.fedoraproject.org/rpms/tcl/raw/master/f/tcl-8.6.10-hidden.patch
+Patch5:		tcl-8.6.0-add-missing-linkage-against-libdl.patch
+Patch6:		tcl-8.4.19-strtod.patch
 Provides:	/usr/bin/tclsh
 Provides:	tcl(abi) = %{major}
 Recommends:	tcl-doc >= %{EVRD}
@@ -38,7 +35,7 @@ tclsh, a simple example of a Tcl application.
 If you're installing the tcl package and you want to use Tcl for
 development, you should also install the tk and tclx packages.
 
-%package -n	%{libname}
+%package -n %{libname}
 Summary:	Shared libraries for %{name}
 Group:		System/Libraries
 
@@ -51,7 +48,7 @@ tclsh, a simple example of a Tcl application.
 If you're installing the tcl package and you want to use Tcl for
 development, you should also install the tk and tclx packages.
 
-%package -n	%{devname}
+%package -n %{devname}
 Summary:	Development files for %{name}
 Group:		Development/Other
 Requires:	%{name} = %{version}-%{release}
@@ -60,7 +57,7 @@ Provides:	%{name}-devel = %{version}-%{release}
 Obsoletes:	%mklibname tcl 8.4 -d
 Obsoletes:	%mklibname tcl 8.5 -d
 
-%description -n	%{devname}
+%description -n %{devname}
 This package contains development files for %{name}.
 
 %package doc
@@ -72,18 +69,10 @@ Requires:	%{name} = %{EVRD}
 Documentation files for %{name}.
 
 %prep
-%setup -q -n %{name}%{version}%{?pre}
+%autosetup -n %{name}%{version}%{?pre} -p1
 rm -r compat/zlib
 rm -rf pkgs/sqlite3
 chmod -x generic/tclStrToD.c
-
-%patch0 -p1 -b .conf~
-%patch2 -p1 -b .autopath~
-%patch3 -p1 -b .includes~
-%patch4 -p1 -b .expect~
-#patch5 -p1 -b .tdbc_location~
-%patch6 -p1
-%patch7 -p1 -b .strod
 
 %build
 # (tpg) fix build
@@ -91,8 +80,6 @@ chmod -x generic/tclStrToD.c
 %global optflags %{optflags} -fPIC
 %endif
 
-export CC=gcc
-export CXX=g++
 cd unix
 autoconf
 %configure \
@@ -112,7 +99,7 @@ cd -
 make -C unix test
 
 %install
-%makeinstall -C unix TCL_LIBRARY=%{buildroot}%{_datadir}/%{name}%{major}
+%make_install -C unix TCL_LIBRARY=%{buildroot}%{_datadir}/%{name}%{major}
 
 ln -s tclsh%{major} %{buildroot}%{_bindir}/tclsh
 
@@ -134,7 +121,7 @@ find generic unix -name "*.h" -exec cp -p '{}' %{buildroot}/%{_includedir}/%{nam
 )
 
 # remove buildroot traces
-sed -i -e "s|$PWD/unix|%{_libdir}|; s|$PWD|%{_includedir}/%{name}-private|" %{buildroot}/%{_libdir}/%{name}Config.sh
+sed -i -e "s|$(pwd)/unix|%{_libdir}|; s|$(pwd)|%{_includedir}/%{name}-private|" %{buildroot}/%{_libdir}/%{name}Config.sh
 rm -rf %{buildroot}/%{_datadir}/%{name}%{major}/ldAix
 
 install -m 0644 -D %{SOURCE1} %{buildroot}%{_sysconfdir}/rpm/macros.d/%{name}.macros
