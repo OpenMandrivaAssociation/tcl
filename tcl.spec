@@ -4,6 +4,8 @@
 %define devname %mklibname %{name} -d
 %define _disable_lto 1
 
+%global ldflags %{ldflags} -Wl,-z,notext
+
 Summary:	Tool Command Language, pronounced tickle
 Name:		tcl
 Version:	8.6.10
@@ -89,7 +91,7 @@ autoconf
     --without-tzdata \
     --includedir=%{_includedir}/tcl%{version}
 
-%make_build CFLAGS="%{optflags}" LDFLAGS="%{ldflags} -Wl,-z,notext" TCL_LIBRARY=%{_datadir}/%{name}%{major}
+%make_build CFLAGS="%{optflags}" LDFLAGS="%{ldflags}" TCL_LIBRARY=%{_datadir}/%{name}%{major}
 
 cd -
 
