@@ -3,12 +3,12 @@
 %define libname %{mklibname %{name} %{major}}_not0
 %define devname %mklibname %{name} -d
 %define _disable_lto 1
-%ifnarch %{ix86} %{riscv}
-%global optflags %{optflags} -fPIC --rtlib=compiler-rt
-%else
-%global optflags %{optflags} -fPIC
-%endif
-%global ldflags %{ldflags} -Wl,-z,notext
+#ifnarch %{ix86} %{riscv}
+#global optflags %{optflags} -fPIC --rtlib=compiler-rt
+#else
+#global optflags %{optflags} -fPIC
+#endif
+#global ldflags %{ldflags} -Wl,-z,notext
 
 Summary:	Tool Command Language, pronounced tickle
 Name:		tcl
