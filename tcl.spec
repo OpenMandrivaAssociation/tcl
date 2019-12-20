@@ -83,7 +83,7 @@ chmod -x generic/tclStrToD.c
 %build
 
 cd unix
-autoconf
+%config_update
 %configure \
     --enable-threads \
     --enable-64bit \
