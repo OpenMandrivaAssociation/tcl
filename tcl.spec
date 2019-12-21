@@ -3,7 +3,7 @@
 %define libname %{mklibname %{name} %{major}}_not0
 %define devname %mklibname %{name} -d
 %define _disable_lto 1
-%ifnarch %{ix86} %{riscv}
+%ifnarch %{riscv}
 %global optflags %{optflags} -fPIC --rtlib=compiler-rt
 %else
 %global optflags %{optflags} -fPIC
