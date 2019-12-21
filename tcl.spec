@@ -3,12 +3,12 @@
 %define libname %{mklibname %{name} %{major}}_not0
 %define devname %mklibname %{name} -d
 %define _disable_lto 1
-#ifnarch %{ix86} %{riscv}
-#global optflags %{optflags} -fPIC --rtlib=compiler-rt
-#else
-#global optflags %{optflags} -fPIC
-#endif
-#global ldflags %{ldflags} -Wl,-z,notext
+%ifnarch %{ix86} %{riscv}
+%global optflags %{optflags} -fPIC --rtlib=compiler-rt
+%else
+%global optflags %{optflags} -fPIC
+%endif
+%global ldflags %{ldflags} -Wl,-z,notext
 
 Summary:	Tool Command Language, pronounced tickle
 Name:		tcl
@@ -81,9 +81,15 @@ rm -rf pkgs/sqlite3
 chmod -x generic/tclStrToD.c
 
 %build
-
 cd unix
 %config_update
+autoreconf -fiv
+
+# (tpg) withoout this -m64 is passed and build fails
+%ifarch %{ix86}
+export tcl_cv_cc_m64=no
+%endif
+
 %configure \
     --enable-threads \
     --enable-64bit \
