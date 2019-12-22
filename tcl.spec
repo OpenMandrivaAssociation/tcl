@@ -85,14 +85,11 @@ cd unix
 %config_update
 autoreconf -fiv
 
-# (tpg) withoout this -m64 is passed and build fails
-%ifarch %{ix86}
-export tcl_cv_cc_m64=no
-%endif
-
 %configure \
     --enable-threads \
+%ifnarch %{ix86}
     --enable-64bit \
+%endif
     --enable-symbols \
     --enable-shared \
     --disable-rpath \
