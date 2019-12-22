@@ -13,7 +13,7 @@
 Summary:	Tool Command Language, pronounced tickle
 Name:		tcl
 Version:	8.6.10
-Release:	1
+Release:	2
 Group:		System/Libraries
 License:	BSD
 URL:		http://tcl.tk
@@ -117,11 +117,11 @@ mkdir -p %{buildroot}/%{_libdir}/%{name}%{major}
 # paths don't look at /usr/lib for efficiency, so we symlink into tcl8.6 for now
 ln -s %{_libdir}/%{name}Config.sh %{buildroot}/%{_libdir}/%{name}%{major}/%{name}Config.sh
 
-mkdir -p %{buildroot}/%{_includedir}/%{name}-private/{generic,unix}
-find generic unix -name "*.h" -exec cp -p '{}' %{buildroot}/%{_includedir}/%{name}-private/'{}' ';'
+mkdir -p %{buildroot}%{_includedir}/%{name}-private/{generic,unix}
+find generic unix -name "*.h" -exec cp -p '{}' %{buildroot}%{_includedir}/%{name}-private/'{}' ';'
 ( cd %{buildroot}/%{_includedir}
-	for i in *.h ; do
-		[ -f %{buildroot}/%{_includedir}/%{name}-private/generic/$i ] && ln -sf ../../$i %{buildroot}/%{_includedir}/%{name}-private/generic ||: ;
+	for i in $(ls -1 *.h) ; do
+		[ -f %{buildroot}%{_includedir}/%{name}-private/generic/$i ] && ln -sf ../../$i %{buildroot}%{_includedir}/%{name}-private/generic ||: ;
 	done
 )
 
@@ -148,7 +148,9 @@ done
 %{_libdir}/libtcl%{major}.so
 
 %files -n %{devname}
-%{_includedir}/*
+%{_includedir}/*.h
+%dir %{_includedir}/tcl-private
+%{_includedir}/tcl-private/*
 %{_libdir}/libtcl.so
 %{_libdir}/lib*stub*.a
 %{_libdir}/tcl*Config.sh
