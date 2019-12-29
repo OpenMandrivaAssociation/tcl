@@ -148,7 +148,7 @@ done
 %{_libdir}/libtcl%{major}.so
 
 %files -n %{devname}
-%{_includedir}/*.h
+%{_includedir}/tcl%{version}/*.h
 %dir %{_includedir}/tcl-private
 %{_includedir}/tcl-private/*
 %{_libdir}/libtcl.so
