@@ -100,7 +100,7 @@ autoreconf -fiv
 cd -
 
 %check
-#make -C unix test ||:
+make -C unix test ||:
 
 %install
 %make_install -C unix TCL_LIBRARY="%{_datadir}/%{name}%{major}"
