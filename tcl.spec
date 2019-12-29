@@ -13,7 +13,7 @@
 Summary:	Tool Command Language, pronounced tickle
 Name:		tcl
 Version:	8.6.10
-Release:	2
+Release:	3
 Group:		System/Libraries
 License:	BSD
 URL:		http://tcl.tk
@@ -93,15 +93,14 @@ autoreconf -fiv
     --enable-symbols \
     --enable-shared \
     --disable-rpath \
-    --without-tzdata \
-    --includedir=%{_includedir}/tcl%{version}
+    --without-tzdata
 
 %make_build CFLAGS="%{optflags}" LDFLAGS="%{ldflags}" TCL_LIBRARY="%{_datadir}/%{name}%{major}"
 
 cd -
 
 %check
-make -C unix test ||:
+#make -C unix test ||:
 
 %install
 %make_install -C unix TCL_LIBRARY="%{_datadir}/%{name}%{major}"
@@ -148,7 +147,7 @@ done
 %{_libdir}/libtcl%{major}.so
 
 %files -n %{devname}
-%{_includedir}/tcl%{version}/*.h
+%{_includedir}/*.h
 %dir %{_includedir}/tcl-private
 %{_includedir}/tcl-private/*
 %{_libdir}/libtcl.so
