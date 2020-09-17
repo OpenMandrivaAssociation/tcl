@@ -13,7 +13,7 @@
 Summary:	Tool Command Language, pronounced tickle
 Name:		tcl
 Version:	8.6.10
-Release:	3
+Release:	4
 Group:		System/Libraries
 License:	BSD
 URL:		http://tcl.tk
@@ -29,7 +29,6 @@ Patch2:		https://src.fedoraproject.org/rpms/tcl/raw/master/f/tcl-8.6.10-hidden.p
 Patch3:		tcl-8.6.0-add-missing-linkage-against-libdl.patch
 Provides:	/usr/bin/tclsh
 Provides:	tcl(abi) = %{major}
-Recommends:	tcl-doc >= %{EVRD}
 
 %description
 Tcl is a simple scripting language designed to be embedded into
