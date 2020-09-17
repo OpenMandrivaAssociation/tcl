@@ -2,7 +2,7 @@
 # temporary workaround for incorrect sonaming previously..
 %define libname %{mklibname %{name} %{major}}_not0
 %define devname %mklibname %{name} -d
-%define _disable_lto 1
+
 %ifnarch %{riscv}
 %global optflags %{optflags} -fPIC --rtlib=compiler-rt
 %else
