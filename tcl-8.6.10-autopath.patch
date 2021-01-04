@@ -1,8 +1,7 @@
-diff --git a/library/auto.tcl b/library/auto.tcl
-index a7a8979..892c2c4 100644
---- a/library/auto.tcl
-+++ b/library/auto.tcl
-@@ -81,6 +81,13 @@ proc tcl_findLibrary {basename version patch initScript enVarName varName} {
+diff -up tcl8.6.11/library/auto.tcl.1~ tcl8.6.11/library/auto.tcl
+--- tcl8.6.11/library/auto.tcl.1~	2020-12-11 18:46:22.000000000 +0100
++++ tcl8.6.11/library/auto.tcl	2021-01-03 23:12:04.572636071 +0100
+@@ -81,6 +81,13 @@ proc tcl_findLibrary {basename version p
  	    lappend dirs [::${basename}::pkgconfig get scriptdir,runtime]
  	}
  
@@ -16,40 +15,38 @@ index a7a8979..892c2c4 100644
  	# 3. Relative to auto_path directories.  This checks relative to the
  	# Tcl library as well as allowing loading of libraries added to the
  	# auto_path that is not relative to the core library or binary paths.
-diff --git a/library/init.tcl b/library/init.tcl
-index 5cda0d9..ffeb301 100644
---- a/library/init.tcl
-+++ b/library/init.tcl
-@@ -47,16 +47,11 @@ if {![info exists auto_path]} {
- }
+diff -up tcl8.6.11/library/init.tcl.1~ tcl8.6.11/library/init.tcl
+--- tcl8.6.11/library/init.tcl.1~	2021-01-03 23:12:04.572636071 +0100
++++ tcl8.6.11/library/init.tcl	2021-01-04 01:38:42.017900685 +0100
+@@ -52,16 +52,11 @@ if {![info exists auto_path]} {
  namespace eval tcl {
-     variable Dir
--    foreach Dir [list $::tcl_library [file dirname $::tcl_library]] {
-+    foreach Dir [list $::tcl_library] {
- 	if {$Dir ni $::auto_path} {
- 	    lappend ::auto_path $Dir
- 	}
-     }
--    set Dir [file join [file dirname [file dirname \
--	    [info nameofexecutable]]] lib]
--    if {$Dir ni $::auto_path} {
--	lappend ::auto_path $Dir
--    }
-     catch {
- 	foreach Dir $::tcl_pkgPath {
+     if {![interp issafe]} {
+ 	variable Dir
+-	foreach Dir [list $::tcl_library [file dirname $::tcl_library]] {
++	foreach Dir [list $::tcl_library] {
  	    if {$Dir ni $::auto_path} {
-diff --git a/unix/configure.in b/unix/configure.in
-index 0d3f426..13ce9db 100755
---- a/unix/configure.in
-+++ b/unix/configure.in
-@@ -866,9 +866,9 @@ if test "$FRAMEWORK_BUILD" = "1" ; then
+ 		lappend ::auto_path $Dir
+ 	    }
+ 	}
+-	set Dir [file join [file dirname [file dirname \
+-		[info nameofexecutable]]] lib]
+-	if {$Dir ni $::auto_path} {
+-	    lappend ::auto_path $Dir
+-	}
+ 	if {[info exists ::tcl_pkgPath]} { catch {
+ 	    foreach Dir $::tcl_pkgPath {
+ 		if {$Dir ni $::auto_path} {
+diff -up tcl8.6.11/unix/configure.in.1~ tcl8.6.11/unix/configure.in
+--- tcl8.6.11/unix/configure.in.1~	2021-01-03 23:12:04.572636071 +0100
++++ tcl8.6.11/unix/configure.in	2021-01-04 01:40:17.627102528 +0100
+@@ -865,9 +865,9 @@ if test "$FRAMEWORK_BUILD" = "1" ; then
      test -z "$TCL_MODULE_PATH"  && \
  	TCL_MODULE_PATH="~/Library/Tcl /Library/Tcl"
  elif test "$prefix/lib" != "$libdir"; then
--    test -z "$TCL_PACKAGE_PATH" && TCL_PACKAGE_PATH="${libdir} ${prefix}/lib ${TCL_PACKAGE_PATH}"
+-    test -z "$TCL_PACKAGE_PATH" && TCL_PACKAGE_PATH="{${libdir}} {${prefix}/lib} ${TCL_PACKAGE_PATH}"
 +    test -z "$TCL_PACKAGE_PATH" && TCL_PACKAGE_PATH="${libdir}/tcl8.6 ${prefix}/share/tcl8.6 ${libdir}/tk8.6 ${prefix}/share/tk8.6 ${TCL_PACKAGE_PATH}"
  else
--    test -z "$TCL_PACKAGE_PATH" && TCL_PACKAGE_PATH="${prefix}/lib ${TCL_PACKAGE_PATH}"
+-    test -z "$TCL_PACKAGE_PATH" && TCL_PACKAGE_PATH="{${prefix}/lib} ${TCL_PACKAGE_PATH}"
 +    test -z "$TCL_PACKAGE_PATH" && TCL_PACKAGE_PATH="${libdir}/tcl8.6 ${prefix}/share/tcl8.6 ${libdir}/tk8.6 ${prefix}/share/tk8.6 ${TCL_PACKAGE_PATH}"
  fi
  

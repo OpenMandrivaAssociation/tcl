@@ -12,8 +12,8 @@
 
 Summary:	Tool Command Language, pronounced tickle
 Name:		tcl
-Version:	8.6.10
-Release:	4
+Version:	8.6.11
+Release:	1
 Group:		System/Libraries
 License:	BSD
 URL:		http://tcl.tk
@@ -129,7 +129,7 @@ rm -rf %{buildroot}/%{_datadir}/%{name}%{major}/ldAix
 
 install -m 0644 -D %{SOURCE1} %{buildroot}%{_sysconfdir}/rpm/macros.d/%{name}.macros
 
-for i in itcl4.2.0 sqlite3.30.1.2 tdbc1.1.1 tdbcmysql1.1.1 tdbcodbc1.1.1 tdbcpostgres1.1.1 thread2.8.5; do
+for i in itcl4.2.1 sqlite3.34.0 tdbc1.1.2 tdbcmysql1.1.2 tdbcodbc1.1.2 tdbcpostgres1.1.2 thread2.8.6; do
     mv -f %{buildroot}%{_libdir}/"$i" %{buildroot}%{_libdir}/tcl8/%{major}/"$i"
 done
 
