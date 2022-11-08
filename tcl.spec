@@ -1,4 +1,5 @@
 %define major %(echo %{version} |cut -d. -f1-2)
+%define oldlibname %{mklibname %{name} %{major}}_not0
 %define libname %mklibname %{name}
 %define devname %mklibname %{name} -d
 
@@ -61,6 +62,8 @@ development, you should also install the tk and tclx packages.
 %package -n %{libname}
 Summary:	Shared libraries for %{name}
 Group:		System/Libraries
+# Intentionally unversioned, because oldlibname was plain wrong
+Obsoletes:	%{oldlibname}
 
 %description -n %{libname}
 Tcl is a simple scripting language designed to be embedded into
