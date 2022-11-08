@@ -1,6 +1,5 @@
 %define major %(echo %{version} |cut -d. -f1-2)
-# temporary workaround for incorrect sonaming previously..
-%define libname %{mklibname %{name} %{major}}_not0
+%define libname %mklibname %{name}
 %define devname %mklibname %{name} -d
 
 %ifnarch %{riscv}
@@ -10,23 +9,32 @@
 %endif
 %global ldflags %{ldflags} -Wl,-z,notext
 
+
+%bcond_without	sdt
+%bcond_with	sqlite
+
 Summary:	Tool Command Language, pronounced tickle
 Name:		tcl
-Version:	8.6.11
+Version:	8.6.12
 Release:	1
 Group:		System/Libraries
 License:	BSD
-URL:		http://tcl.tk
-Source0:	http://downloads.sourceforge.net/%{name}/%{name}%{version}%{?pre}-src.tar.gz
+URL:		https://tcl.tk
+Source0:	https://downloads.sourceforge.net/%{name}/%{name}%{version}-src.tar.gz
+#Source0:	https://downloads.sourceforge.net/%{name}/%{name}-core%{version}-src.tar.gz
 Source1:	tcl.macros
 Source2:	tcl.rpmlintrc
+# From Fedora, replaces old p6 by Stew, rediffed for 8.6 - AdamW 2008/10
+Patch0:		https://src.fedoraproject.org/rpms/tcl/raw/rawhide/f/tcl-8.6.12-autopath.patch
+Patch1:		https://src.fedoraproject.org/rpms/tcl/raw/rawhide/f/tcl-8.6.12-conf.patch
+Patch2:		https://src.fedoraproject.org/rpms/tcl/raw/rawhide/f/tcl-8.6.12-hidden.patch
+Patch3:		https://src.fedoraproject.org/rpms/tcl/raw/rawhide/f/tcl-8.6.10-tcltests-path-fix.patch
+Patch4:		tcl-8.6.0-add-missing-linkage-against-libdl.patch
+
 BuildRequires:	pkgconfig(zlib)
 BuildRequires:	timezone
-# From Fedora, replaces old p6 by Stew, rediffed for 8.6 - AdamW 2008/10
-Patch0:		https://src.fedoraproject.org/rpms/tcl/raw/master/f/tcl-8.6.10-autopath.patch
-Patch1:		https://src.fedoraproject.org/rpms/tcl/raw/master/f/tcl-8.6.10-conf.patch
-Patch2:		https://src.fedoraproject.org/rpms/tcl/raw/master/f/tcl-8.6.10-hidden.patch
-Patch3:		tcl-8.6.0-add-missing-linkage-against-libdl.patch
+%{?with_sdt:BuildRequires:	systemtap-devel}
+
 Provides:	/usr/bin/tclsh
 Provides:	tcl(abi) = %{major}
 
@@ -38,6 +46,17 @@ tclsh, a simple example of a Tcl application.
 
 If you're installing the tcl package and you want to use Tcl for
 development, you should also install the tk and tclx packages.
+
+%files
+%{_bindir}/*
+%{_mandir}/man1/*
+%{_libdir}/%{name}%{major}
+%{_datadir}/%{name}%{major}
+%{_datadir}/%{name}8
+%exclude %{_libdir}/%{name}%{major}/*Config.sh
+%{_libdir}/tcl8/%{major}
+
+#--------------------------------------------------------------------
 
 %package -n %{libname}
 Summary:	Shared libraries for %{name}
@@ -52,6 +71,11 @@ tclsh, a simple example of a Tcl application.
 If you're installing the tcl package and you want to use Tcl for
 development, you should also install the tk and tclx packages.
 
+%files -n %{libname}
+%{_libdir}/libtcl%{major}.so
+
+#--------------------------------------------------------------------
+
 %package -n %{devname}
 Summary:	Development files for %{name}
 Group:		Development/Other
@@ -64,6 +88,19 @@ Obsoletes:	%mklibname tcl 8.5 -d
 %description -n %{devname}
 This package contains development files for %{name}.
 
+%files -n %{devname}
+%{_includedir}/*.h
+%dir %{_includedir}/tcl-private
+%{_includedir}/tcl-private/*
+%{_libdir}/libtcl.so
+%{_libdir}/lib*stub*.a
+%{_libdir}/tcl*Config.sh
+%{_libdir}/%{name}%{major}/*Config.sh
+%{_sysconfdir}/rpm/macros.d/%{name}.macros
+%{_libdir}/pkgconfig/*.pc
+
+#--------------------------------------------------------------------
+
 %package doc
 Summary:	Documentation files for %{name}
 Group:		Development/Other
@@ -72,31 +109,38 @@ Requires:	%{name} = %{EVRD}
 %description doc
 Documentation files for %{name}.
 
+%files doc
+%{_mandir}/man3/*
+%{_mandir}/mann/*
+
+#--------------------------------------------------------------------
+
 %prep
-%autosetup -n %{name}%{version}%{?pre} -p1
+%autosetup -p1 -n %{name}%{version}
 
 rm -r compat/zlib
-rm -rf pkgs/sqlite3
+%if !%{with sqlite}
+rm -rf pkgs/sqlite3.*
+%endif
 chmod -x generic/tclStrToD.c
 
 %build
-cd unix
+pushd unix
 %config_update
 autoreconf -fiv
-
 %configure \
-    --enable-threads \
+	--enable-threads \
 %ifnarch %{ix86}
-    --enable-64bit \
+	--enable-64bit \
 %endif
-    --enable-symbols \
-    --enable-shared \
-    --disable-rpath \
-    --without-tzdata
+	--enable-symbols \
+	--enable-shared \
+	--disable-rpath \
+	--%{?with_sdt:en}%{!?with_sdt:dis}able-dtrace \
+	--without-tzdata
 
 %make_build CFLAGS="%{optflags}" LDFLAGS="%{ldflags}" TCL_LIBRARY="%{_datadir}/%{name}%{major}"
-
-cd -
+popd
 
 %check
 make -C unix test ||:
@@ -129,33 +173,7 @@ rm -rf %{buildroot}/%{_datadir}/%{name}%{major}/ldAix
 
 install -m 0644 -D %{SOURCE1} %{buildroot}%{_sysconfdir}/rpm/macros.d/%{name}.macros
 
-for i in itcl4.2.1 sqlite3.34.0 tdbc1.1.2 tdbcmysql1.1.2 tdbcodbc1.1.2 tdbcpostgres1.1.2 thread2.8.6; do
-    mv -f %{buildroot}%{_libdir}/"$i" %{buildroot}%{_libdir}/tcl8/%{major}/"$i"
+for i in itcl4.2.2 sqlite3.36.0 tdbc1.1.3 tdbcmysql1.1.3 tdbcodbc1.1.3 tdbcpostgres1.1.3 thread2.8.7; do
+	[ -d %{buildroot}%{_libdir}/"$i" ] && mv -f %{buildroot}%{_libdir}/"$i" %{buildroot}%{_libdir}/%{name}%{major}/"$i"
 done
 
-%files
-%{_bindir}/*
-%{_mandir}/man1/*
-%{_libdir}/%{name}%{major}
-%{_datadir}/%{name}%{major}
-%{_datadir}/%{name}8
-%exclude %{_libdir}/%{name}%{major}/*Config.sh
-%{_libdir}/tcl8/%{major}
-
-%files -n %{libname}
-%{_libdir}/libtcl%{major}.so
-
-%files -n %{devname}
-%{_includedir}/*.h
-%dir %{_includedir}/tcl-private
-%{_includedir}/tcl-private/*
-%{_libdir}/libtcl.so
-%{_libdir}/lib*stub*.a
-%{_libdir}/tcl*Config.sh
-%{_libdir}/%{name}%{major}/*Config.sh
-%{_sysconfdir}/rpm/macros.d/%{name}.macros
-%{_libdir}/pkgconfig/*.pc
-
-%files doc
-%{_mandir}/man3/*
-%{_mandir}/mann/*
