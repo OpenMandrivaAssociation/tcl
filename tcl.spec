@@ -16,8 +16,8 @@
 
 Summary:	Tool Command Language, pronounced tickle
 Name:		tcl
-Version:	8.6.12
-Release:	2
+Version:	8.6.13
+Release:	1
 Group:		System/Libraries
 License:	BSD
 URL:		https://tcl.tk
@@ -30,7 +30,6 @@ Patch0:		https://src.fedoraproject.org/rpms/tcl/raw/rawhide/f/tcl-8.6.12-autopat
 Patch1:		https://src.fedoraproject.org/rpms/tcl/raw/rawhide/f/tcl-8.6.12-conf.patch
 Patch2:		https://src.fedoraproject.org/rpms/tcl/raw/rawhide/f/tcl-8.6.12-hidden.patch
 Patch3:		https://src.fedoraproject.org/rpms/tcl/raw/rawhide/f/tcl-8.6.10-tcltests-path-fix.patch
-Patch4:		tcl-8.6.0-add-missing-linkage-against-libdl.patch
 
 BuildRequires:	pkgconfig(zlib)
 BuildRequires:	timezone
@@ -176,7 +175,7 @@ rm -rf %{buildroot}/%{_datadir}/%{name}%{major}/ldAix
 
 install -m 0644 -D %{SOURCE1} %{buildroot}%{_sysconfdir}/rpm/macros.d/%{name}.macros
 
-for i in itcl4.2.2 sqlite3.36.0 tdbc1.1.3 tdbcmysql1.1.3 tdbcodbc1.1.3 tdbcpostgres1.1.3 thread2.8.7; do
+for i in itcl4.2.3 sqlite3.40.0 tdbc1.1.5 tdbcmysql1.1.5 tdbcodbc1.1.5 tdbcpostgres1.1.5 thread2.8.8; do
 	[ -d %{buildroot}%{_libdir}/"$i" ] && mv -f %{buildroot}%{_libdir}/"$i" %{buildroot}%{_libdir}/%{name}%{major}/"$i"
 done
 
