@@ -3,10 +3,10 @@
 %define devname %mklibname %{name} -d
 
 %ifnarch %{riscv}
-%global optflags %{optflags} -fPIC --rtlib=compiler-rt
-%else
 # -O3 is to work around compile-time _Float32 breakage on x86_64 when using -Os
-%global optflags %{optflags} -O3 -fPIC
+%global optflags %{optflags} -O3 -fPIC --rtlib=compiler-rt
+%else
+%global optflags %{optflags} -fPIC
 %endif
 %global ldflags %{ldflags} -Wl,-z,notext
 
