@@ -1,12 +1,12 @@
 %define major %(echo %{version} |cut -d. -f1-2)
-%define oldlibname %{mklibname %{name} %{major}}_not0
 %define libname %mklibname %{name}
 %define devname %mklibname %{name} -d
 
 %ifnarch %{riscv}
 %global optflags %{optflags} -fPIC --rtlib=compiler-rt
 %else
-%global optflags %{optflags} -fPIC
+# -O3 is to work around compile-time _Float32 breakage on x86_64 when using -Os
+%global optflags %{optflags} -O3 -fPIC
 %endif
 %global ldflags %{ldflags} -Wl,-z,notext
 
@@ -31,6 +31,7 @@ BuildRequires:	pkgconfig(minizip)
 BuildRequires:	pkgconfig(odbc)
 BuildRequires:	pkgconfig(libpq)
 BuildRequires:	pkgconfig(mariadb)
+BuildRequires:	pkgconfig(libtommath)
 BuildRequires:	zip
 BuildRequires:	timezone
 %{?with_sdt:BuildRequires:	systemtap-devel}
@@ -67,8 +68,6 @@ development, you should also install the tk and tclx packages.
 %package -n %{libname}
 Summary:	Shared libraries for %{name}
 Group:		System/Libraries
-# Intentionally unversioned, because oldlibname was plain wrong
-Obsoletes:	%{oldlibname}
 
 %description -n %{libname}
 Tcl is a simple scripting language designed to be embedded into
