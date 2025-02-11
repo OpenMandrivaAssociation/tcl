@@ -1,10 +1,10 @@
-diff -up tcl9.0.0/generic/tclZipfs.c.omv~ tcl9.0.0/generic/tclZipfs.c
---- tcl9.0.0/generic/tclZipfs.c.omv~	2025-02-11 01:10:02.644897696 +0100
-+++ tcl9.0.0/generic/tclZipfs.c	2025-02-11 01:14:35.793139919 +0100
+diff -up tcl9.0.1/generic/tclZipfs.c.4~ tcl9.0.1/generic/tclZipfs.c
+--- tcl9.0.1/generic/tclZipfs.c.4~	2025-02-11 03:13:15.292720703 +0100
++++ tcl9.0.1/generic/tclZipfs.c	2025-02-11 03:14:28.129489112 +0100
 @@ -74,10 +74,10 @@
+ 	}								\
      } while (0)
  
- #ifdef HAVE_ZLIB
 -#include "zlib.h"
 -#include "crypt.h"
 -#include "zutil.h"
