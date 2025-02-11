@@ -28,6 +28,10 @@ Source2:	tcl.rpmlintrc
 
 BuildRequires:	pkgconfig(zlib)
 BuildRequires:	pkgconfig(minizip)
+BuildRequires:	pkgconfig(odbc)
+BuildRequires:	pkgconfig(libpq)
+BuildRequires:	pkgconfig(mariadb)
+BuildRequires:	zip
 BuildRequires:	timezone
 %{?with_sdt:BuildRequires:	systemtap-devel}
 
