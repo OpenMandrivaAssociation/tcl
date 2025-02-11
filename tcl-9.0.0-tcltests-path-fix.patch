@@ -1,8 +1,8 @@
 diff --git a/unix/Makefile.in b/unix/Makefile.in
-index 99bdf05..0b2f660 100644
+index 0ff1258..5c0f229 100644
 --- a/unix/Makefile.in
 +++ b/unix/Makefile.in
-@@ -788,7 +788,7 @@ topDirName:
+@@ -887,7 +887,7 @@ topDirName:
  # This keeps tcltest from picking up an already installed version of the Tcl
  # library.
  SHELL_ENV =	@LD_LIBRARY_PATH_VAR@=`pwd`:${@LD_LIBRARY_PATH_VAR@} \
@@ -10,4 +10,4 @@ index 99bdf05..0b2f660 100644
 +		TCLLIBPATH="@abs_builddir@/pkgs @abs_builddir@/../tests" \
  		TCL_LIBRARY="${TCL_BUILDTIME_LIBRARY}"
  
- ${TCLTEST_EXE}: ${TCLTEST_OBJS} ${TCL_LIB_FILE} ${TCL_STUB_LIB_FILE} ${BUILD_DLTEST}
+ ${TCLTEST_EXE}: ${TCLTEST_OBJS} ${TCL_LIB_FILE} ${TCL_STUB_LIB_FILE} ${BUILD_DLTEST} ${TCL_ZIP_FILE}

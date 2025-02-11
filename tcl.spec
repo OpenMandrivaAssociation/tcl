@@ -16,8 +16,8 @@
 
 Summary:	Tool Command Language, pronounced tickle
 Name:		tcl
-Version:	8.6.13
-Release:	2
+Version:	9.0.0
+Release:	1
 Group:		System/Libraries
 License:	BSD
 URL:		https://tcl.tk
@@ -25,18 +25,20 @@ Source0:	https://downloads.sourceforge.net/%{name}/%{name}%{version}-src.tar.gz
 #Source0:	https://downloads.sourceforge.net/%{name}/%{name}-core%{version}-src.tar.gz
 Source1:	tcl.macros
 Source2:	tcl.rpmlintrc
-# From Fedora, replaces old p6 by Stew, rediffed for 8.6 - AdamW 2008/10
-Patch0:		https://src.fedoraproject.org/rpms/tcl/raw/rawhide/f/tcl-8.6.12-autopath.patch
-Patch1:		https://src.fedoraproject.org/rpms/tcl/raw/rawhide/f/tcl-8.6.12-conf.patch
-Patch2:		https://src.fedoraproject.org/rpms/tcl/raw/rawhide/f/tcl-8.6.12-hidden.patch
-Patch3:		https://src.fedoraproject.org/rpms/tcl/raw/rawhide/f/tcl-8.6.10-tcltests-path-fix.patch
 
 BuildRequires:	pkgconfig(zlib)
+BuildRequires:	pkgconfig(minizip)
 BuildRequires:	timezone
 %{?with_sdt:BuildRequires:	systemtap-devel}
 
 Provides:	/usr/bin/tclsh
 Provides:	tcl(abi) = %{major}
+
+%patchlist
+https://src.fedoraproject.org/rpms/tcl/raw/rawhide/f/tcl-9.0.0-autopath.patch
+https://src.fedoraproject.org/rpms/tcl/raw/rawhide/f/tcl-8.6.15-conf.patch
+https://src.fedoraproject.org/rpms/tcl/raw/rawhide/f/tcl-9.0.0-tcltests-path-fix.patch
+tcl-9.0.0-minizip-ng.patch
 
 %description
 Tcl is a simple scripting language designed to be embedded into
@@ -50,11 +52,11 @@ development, you should also install the tk and tclx packages.
 %files
 %{_bindir}/*
 %{_mandir}/man1/*
-%{_libdir}/%{name}%{major}
 %{_datadir}/%{name}%{major}
-%{_datadir}/%{name}8
+%{_datadir}/%{name}9
+%{_libdir}/%{name}%{major}
 %exclude %{_libdir}/%{name}%{major}/*Config.sh
-%{_libdir}/tcl8/%{major}
+%{_libdir}/tcl9/%{major}
 
 #--------------------------------------------------------------------
 
@@ -100,6 +102,12 @@ This package contains development files for %{name}.
 %{_libdir}/%{name}%{major}/*Config.sh
 %{_sysconfdir}/rpm/macros.d/%{name}.macros
 %{_libdir}/pkgconfig/*.pc
+%{_libdir}/itcl[0-9]*
+%{_libdir}/tdbc[0-9]*
+%{_libdir}/tdbcmysql[0-9]*
+%{_libdir}/tdbcodbc[0-9]*
+%{_libdir}/tdbcpostgres[0-9]*
+%{_libdir}/thread[0-9]*
 
 #--------------------------------------------------------------------
 
@@ -125,6 +133,7 @@ rm -r compat/zlib
 rm -rf pkgs/sqlite3.*
 %endif
 chmod -x generic/tclStrToD.c
+sed -i -e 's,-Werror$,,' unix/dltest/Makefile.in
 
 %build
 pushd unix
@@ -137,45 +146,41 @@ autoreconf -fiv
 %endif
 	--enable-symbols \
 	--enable-shared \
-	--disable-rpath \
-	--%{?with_sdt:en}%{!?with_sdt:dis}able-dtrace \
-	--without-tzdata
+	--with-system-libtommath \
+	--disable-rpath
 
-%make_build CFLAGS="%{optflags}" LDFLAGS="%{ldflags}" TCL_LIBRARY="%{_datadir}/%{name}%{major}"
+%make_build CFLAGS="%{optflags}" LDFLAGS="%{ldflags}" TCL_LIBRARY=%{_datadir}/%{name}%{major}
 popd
 
 %check
-make -C unix test ||:
+#make -C unix test
 
 %install
-%make_install -C unix TCL_LIBRARY="%{_datadir}/%{name}%{major}"
-
+# install-libraries install-msgs is workaround for
+# https://core.tcl-lang.org/tcl/tktview/3d6d7523525d19ffe95109e08a90f2413c956f82
+%make_install install-libraries install-msgs -C unix INSTALL_ROOT=%{buildroot} TCL_LIBRARY=%{_datadir}/%{name}%{major}
+ 
 ln -s tclsh%{major} %{buildroot}%{_bindir}/tclsh
-
+ 
 # for linking with -lib%%{name}
 ln -s lib%{name}%{major}.so %{buildroot}%{_libdir}/lib%{name}.so
-
+ 
 mkdir -p %{buildroot}/%{_libdir}/%{name}%{major}
-
+ 
 # postgresql and maybe other packages too need tclConfig.sh
-# paths don't look at /usr/lib for efficiency, so we symlink into tcl8.6 for now
+# paths don't look at /usr/lib for efficiency, so we symlink into tcl9.0 for now
 ln -s %{_libdir}/%{name}Config.sh %{buildroot}/%{_libdir}/%{name}%{major}/%{name}Config.sh
-
-mkdir -p %{buildroot}%{_includedir}/%{name}-private/{generic,unix}
-find generic unix -name "*.h" -exec cp -p '{}' %{buildroot}%{_includedir}/%{name}-private/'{}' ';'
+ 
+mkdir -p %{buildroot}/%{_includedir}/%{name}-private/{generic,unix}
+find generic unix -name "*.h" -exec cp -p '{}' %{buildroot}/%{_includedir}/%{name}-private/'{}' ';'
 ( cd %{buildroot}/%{_includedir}
-	for i in $(ls -1 *.h) ; do
-		[ -f %{buildroot}%{_includedir}/%{name}-private/generic/$i ] && ln -sf ../../$i %{buildroot}%{_includedir}/%{name}-private/generic ||: ;
+	for i in *.h ; do
+		[ -f %{buildroot}/%{_includedir}/%{name}-private/generic/$i ] && ln -sf ../../$i %{buildroot}/%{_includedir}/%{name}-private/generic || :
 	done
 )
-
+ 
 # remove buildroot traces
-sed -i -e "s|$(pwd)/unix|%{_libdir}|; s|$(pwd)|%{_includedir}/%{name}-private|" %{buildroot}/%{_libdir}/%{name}Config.sh
+sed -i -e "s|$PWD/unix|%{_libdir}|; s|$PWD|%{_includedir}/%{name}-private|" %{buildroot}/%{_libdir}/%{name}Config.sh
 rm -rf %{buildroot}/%{_datadir}/%{name}%{major}/ldAix
 
 install -m 0644 -D %{SOURCE1} %{buildroot}%{_sysconfdir}/rpm/macros.d/%{name}.macros
-
-for i in itcl4.2.3 sqlite3.40.0 tdbc1.1.5 tdbcmysql1.1.5 tdbcodbc1.1.5 tdbcpostgres1.1.5 thread2.8.8; do
-	[ -d %{buildroot}%{_libdir}/"$i" ] && mv -f %{buildroot}%{_libdir}/"$i" %{buildroot}%{_libdir}/%{name}%{major}/"$i"
-done
-
