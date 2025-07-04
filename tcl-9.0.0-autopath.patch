@@ -1,8 +1,7 @@
-diff --git a/library/auto.tcl b/library/auto.tcl
-index cc779cf..f73b6c1 100644
---- a/library/auto.tcl
-+++ b/library/auto.tcl
-@@ -142,6 +142,13 @@ proc tcl_findLibrary {basename version patch initScript enVarName varName} {
+diff -up tcl9.0.2/library/auto.tcl.1~ tcl9.0.2/library/auto.tcl
+--- tcl9.0.2/library/auto.tcl.1~	2025-06-16 14:11:43.000000000 +0200
++++ tcl9.0.2/library/auto.tcl	2025-07-04 23:31:57.336551913 +0200
+@@ -142,6 +142,13 @@ proc tcl_findLibrary {basename version p
  	    lappend dirs [::${basename}::pkgconfig get scriptdir,runtime]
  	}
  
@@ -16,10 +15,9 @@ index cc779cf..f73b6c1 100644
  	# 3. Relative to auto_path directories.  This checks relative to the
  	# Tcl library as well as allowing loading of libraries added to the
  	# auto_path that is not relative to the core library or binary paths.
-diff --git a/library/init.tcl b/library/init.tcl
-index 2ed31dc..d473648 100644
---- a/library/init.tcl
-+++ b/library/init.tcl
+diff -up tcl9.0.2/library/init.tcl.1~ tcl9.0.2/library/init.tcl
+--- tcl9.0.2/library/init.tcl.1~	2025-06-16 14:11:43.000000000 +0200
++++ tcl9.0.2/library/init.tcl	2025-07-04 23:31:57.336628467 +0200
 @@ -60,16 +60,11 @@ if {![info exists auto_path]} {
  namespace eval tcl {
      if {![interp issafe]} {
@@ -38,13 +36,12 @@ index 2ed31dc..d473648 100644
  	if {[info exists ::tcl_pkgPath]} { catch {
  	    foreach Dir $::tcl_pkgPath {
  		if {$Dir ni $::auto_path} {
-diff --git a/unix/configure b/unix/configure
-index 13758dd..5859651 100755
---- a/unix/configure
-+++ b/unix/configure
-@@ -11405,9 +11405,9 @@ if test "$FRAMEWORK_BUILD" = "1" ; then
+diff -up tcl9.0.2/unix/configure.1~ tcl9.0.2/unix/configure
+--- tcl9.0.2/unix/configure.1~	2025-06-16 14:11:43.000000000 +0200
++++ tcl9.0.2/unix/configure	2025-07-04 23:36:18.705676843 +0200
+@@ -11305,9 +11305,9 @@ if test "$FRAMEWORK_BUILD" = "1" ; then
      test -z "$TCL_MODULE_PATH"  && \
- 	TCL_MODULE_PATH="~/Library/Tcl /Library/Tcl"
+ 	TCL_MODULE_PATH="~/Library/Tcl:/Library/Tcl"
  elif test "$prefix/lib" != "$libdir"; then
 -    test -z "$TCL_PACKAGE_PATH" && TCL_PACKAGE_PATH="${libdir}:${prefix}/lib"
 +    test -z "$TCL_PACKAGE_PATH" && TCL_PACKAGE_PATH="${libdir}/tcl9.0:${prefix}/share/tcl9.0:${libdir}/tk9.0:${prefix}/share/tk9.0"
@@ -54,13 +51,12 @@ index 13758dd..5859651 100755
  fi
  
  #--------------------------------------------------------------------
-diff --git a/unix/configure.ac b/unix/configure.ac
-index 461b394..b0c7620 100644
---- a/unix/configure.ac
-+++ b/unix/configure.ac
-@@ -896,9 +896,9 @@ if test "$FRAMEWORK_BUILD" = "1" ; then
+diff -up tcl9.0.2/unix/configure.ac.1~ tcl9.0.2/unix/configure.ac
+--- tcl9.0.2/unix/configure.ac.1~	2025-06-16 14:11:43.000000000 +0200
++++ tcl9.0.2/unix/configure.ac	2025-07-04 23:35:47.843686875 +0200
+@@ -871,9 +871,9 @@ if test "$FRAMEWORK_BUILD" = "1" ; then
      test -z "$TCL_MODULE_PATH"  && \
- 	TCL_MODULE_PATH="~/Library/Tcl /Library/Tcl"
+ 	TCL_MODULE_PATH="~/Library/Tcl:/Library/Tcl"
  elif test "$prefix/lib" != "$libdir"; then
 -    test -z "$TCL_PACKAGE_PATH" && TCL_PACKAGE_PATH="${libdir}:${prefix}/lib"
 +    test -z "$TCL_PACKAGE_PATH" && TCL_PACKAGE_PATH="${libdir}/tcl9.0:${prefix}/share/tcl9.0:${libdir}/tk9.0:${prefix}/share/tk9.0"

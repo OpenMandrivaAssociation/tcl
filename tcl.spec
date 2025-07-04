@@ -4,7 +4,7 @@
 
 %ifnarch %{riscv}
 # -O3 is to work around compile-time _Float32 breakage on x86_64 when using -Os
-%global optflags %{optflags} -O3 -fPIC --rtlib=compiler-rt
+%global optflags %{optflags} -O3 -fPIC
 %else
 %global optflags %{optflags} -fPIC
 %endif
@@ -16,7 +16,7 @@
 
 Summary:	Tool Command Language, pronounced tickle
 Name:		tcl
-Version:	9.0.1
+Version:	9.0.2
 Release:	1
 Group:		System/Libraries
 License:	BSD
