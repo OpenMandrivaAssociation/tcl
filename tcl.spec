@@ -17,7 +17,7 @@
 Summary:	Tool Command Language, pronounced tickle
 Name:		tcl
 Version:	9.0.2
-Release:	1
+Release:	2
 Group:		System/Libraries
 License:	BSD
 URL:		https://tcl.tk
@@ -139,6 +139,8 @@ chmod -x generic/tclStrToD.c
 sed -i -e 's,-Werror$,,' unix/dltest/Makefile.in
 
 %build
+export CC=gcc
+export CXX=g++
 pushd unix
 %config_update
 autoreconf -fiv
