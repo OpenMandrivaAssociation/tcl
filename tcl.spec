@@ -25,6 +25,9 @@ Source0:	https://downloads.sourceforge.net/%{name}/%{name}%{version}-src.tar.gz
 #Source0:	https://downloads.sourceforge.net/%{name}/%{name}-core%{version}-src.tar.gz
 Source1:	tcl.macros
 Source2:	tcl.rpmlintrc
+BuildRequires:	automake
+BuildRequires:	libtool-base
+BuildRequires:	slibtool
 BuildRequires:	make
 BuildRequires:	autoconf m4
 BuildRequires:	pkgconfig(zlib)
