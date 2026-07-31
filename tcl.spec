@@ -16,8 +16,8 @@
 
 Summary:	Tool Command Language, pronounced tickle
 Name:		tcl
-Version:	9.0.3
-Release:	2
+Version:	9.0.4
+Release:	1
 Group:		System/Libraries
 License:	BSD
 URL:		https://tcl.tk
@@ -133,7 +133,7 @@ Documentation files for %{name}.
 #--------------------------------------------------------------------
 
 %prep
-%autosetup -p1 -n %{name}%{version}
+%autosetup -p1 -n tcl9.0.4
 
 rm -r compat/zlib
 %if !%{with sqlite}
